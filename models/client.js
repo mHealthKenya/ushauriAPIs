@@ -33,7 +33,7 @@ const Client = sequelize.sequelize.define(
       len: 5
     },
     status: Sequelize.ENUM("Active", "Disabled", "Deceased"),
-    client_status: Sequelize.ENUM("Art", "On Care", "Pre Art"),
+    client_status: Sequelize.ENUM("Art", "Pre Art"),
     gender: Sequelize.NUMBER,
     marital: Sequelize.NUMBER,
     smsenable: Sequelize.ENUM("Yes", "No"),
