@@ -14,6 +14,8 @@
   "author": "ronnie",
   "license": "ISC",
   "dependencies": {
+    "africastalking": "^0.4.0",
+    "base64util": "^2.0.0-f",
     "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
@@ -21,6 +23,10 @@
     "express-winston": "^3.2.0",
     "joi": "^14.3.1",
     "lodash": "^4.17.15",
+<<<<<<< HEAD
+=======
+    "moment": "^2.24.0",
+>>>>>>> bf9214e4914d6eda6ca11bf33aee25fc3c1fae4f
     "morgan": "^1.9.1",
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
