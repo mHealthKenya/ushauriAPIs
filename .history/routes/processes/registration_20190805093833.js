@@ -1,8 +1,6 @@
 const { Client } = require("../../models/client");
 const moment = require("moment");
 const base64 = require("base64util");
-const { Sender } = require("../models/africastalking");
-const { Message } = require("../models/message");
 
 async function registerClient(message, user) {
     message = message.split("*");
@@ -154,20 +152,8 @@ async function registerClient(message, user) {
                     clinic_id: clinic_id
                 }
             })
-            .then(async([client, created]) => {
+            .then(([client, created]) => {
                 if (created) {
-                    console.log(client.id);
-
-                    if (sms_enable == 'Yes' && language != '-1') {
-                        // let sender = Sender
-                        let message = await Message.findAll({
-                            where: { message_type_id: 3, [Op.and]: { languade_id: language } }
-                        });
-                        console.log(message);
-
-
-
-                    }
 
                     return {
                         code: 200,

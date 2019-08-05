@@ -160,7 +160,7 @@ async function registerClient(message, user) {
 
                     if (sms_enable == 'Yes' && language != '-1') {
                         // let sender = Sender
-                        let message = await Message.findAll({
+                        let message = await Message.find({
                             where: { message_type_id: 3, [Op.and]: { languade_id: language } }
                         });
                         console.log(message);
