@@ -29,20 +29,19 @@ async function processAppointment(message, user) {
 
   const app = variables[0];
   const upn = variables[1];
-  let app_date = variables[2];
+  let new_app_date = variables[2];
   let appointment_type = variables[3];
   const appointment_other = variables[4];
   let appointment_kept = variables[5];
   const old_appointment_id = variables[6];
-  let today = moment(new Date());
+  let today = moment(new Date().toDateString());
 
   if (appointment_kept == 1) {
     appointment_kept = "Yes";
   } else if (appointment_kept == 2) {
     appointment_kept = "No";
   }
-
-  app_date = moment(app_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+  let app_date = moment(new_app_date, "DD/MM/YYYY").format("YYYY-MM-DD");
   if (!app_date || app_date == "1970-01-01") {
     return {
       code: 400,
@@ -61,8 +60,7 @@ async function processAppointment(message, user) {
       code: 400,
       message: ` Appointment was not scheduled in the  system , Client: ${upn} is not active in the system.`
     };
-
-  if (moment(app_date) > today) {
+  if (moment(new_app_date).isAfter(new Date().toDateString())) {
     if (old_appointment_id == "-1") {
       let existing_appointments = await Appointment.count({
         where: {
@@ -109,15 +107,21 @@ async function processAppointment(message, user) {
           });
           //if less, redirect user to the defaulter diary to update appointment
 
-          if (moment(active_appointment_details.appntmnt_date) < today) {
+          if (
+            moment(active_appointment_details.appntmnt_date).isBefore(
+              new Date().toDateString()
+            )
+          ) {
             return {
               code: 400,
               message: `Client ${upn} missed an appointment on date ${
                 active_appointment_details.appntmnt_date
-              }. Kindly update them from the deafulter diary`
+              }. Kindly update them from the defaulter diary`
             };
           } else if (
-            moment(active_appointment_details.appntmnt_date) == today
+            moment(active_appointment_details.appntmnt_date).isSame(
+              new Date().toDateString()
+            )
           ) {
             return {
               code: 400,
@@ -125,20 +129,17 @@ async function processAppointment(message, user) {
             };
           } else {
             //if greater than today, if current active date is equal to new app date, return error
+
             if (
-              moment(active_appointment_details.appntmnt_date) ==
-              moment(app_date)
-            ) {
+              moment(active_appointment_details.appntmnt_date).isSame(app_date)
+            )
               return {
                 code: 400,
                 message: `Client ${upn} already has an appointment on ${app_date} and cannot be booked again.`
               };
-            }
-
             //if new app date - today > 30 days, return cannot book unscheduled > 30 days
 
             let diff_days = moment(app_date).diff(today, "days");
-
             if (diff_days > 30) {
               return {
                 code: 400,
@@ -158,7 +159,10 @@ async function processAppointment(message, user) {
                 app_status: "Notified",
                 visit_type: "Un-Scheduled"
               },
-              { returning: true, where: { id: active_appointment_details.id } }
+              {
+                returning: true,
+                where: { id: active_appointment_details.id }
+              }
             )
               .then(([old_app, updated]) => {
                 if (updated) {
@@ -197,11 +201,6 @@ async function processAppointment(message, user) {
                 };
               });
           }
-
-          return {
-            code: 200,
-            message: active_appointment_details.id
-          };
         } else {
           //no active appointment exits, create new appointemnt
           let create_appointment = Appointment.create({

@@ -29,16 +29,17 @@ async function clearFakeAppointment(message, user) {
     };
 
   const fake = variables[0];
-  let actual_date_attended = variables[1];
-  let next_tca = variables[2];
+  let new_actual_date_attended = variables[1];
+  let new_next_tca = variables[2];
   let new_appointment_type = variables[3];
   const old_appointment_id = variables[4];
   let appointment_other = variables[5];
   let today = moment(new Date());
-  next_tca = moment(next_tca, "DD/MM/YYYY").format("YYYY-MM-DD");
-  actual_date_attended = moment(actual_date_attended, "DD/MM/YYYY").format(
-    "YYYY-MM-DD"
-  );
+  let next_tca = moment(new_next_tca, "DD/MM/YYYY").format("YYYY-MM-DD");
+  let actual_date_attended = moment(
+    new_actual_date_attended,
+    "DD/MM/YYYY"
+  ).format("YYYY-MM-DD");
 
   if (old_appointment_id == "-1") {
     return {
@@ -46,7 +47,7 @@ async function clearFakeAppointment(message, user) {
       message: "No appointment ID for the fake missed appointment was provided"
     };
   }
-  if (moment(next_tca) <= today) {
+  if (moment(next_tca).isSameOrBefore(today)) {
     return {
       code: 400,
       message: "New appointment date has to be greater than current date"
@@ -65,9 +66,8 @@ async function clearFakeAppointment(message, user) {
       code: 400,
       message: "Client attached to the selected appointment does not exist"
     };
-
   if (
-    moment(fake_missed_appointment.appntmnt_date) < today &&
+    moment(fake_missed_appointment.appntmnt_date).isBefore(today) &&
     fake_missed_appointment.active_app == 1 &&
     fake_missed_appointment.appointment_kept == null
   ) {
@@ -81,16 +81,16 @@ async function clearFakeAppointment(message, user) {
           client.clinic_number
         }, was already traced and can not be cleared as a fake missed appointment.`
       };
-
-    if (moment(actual_date_attended) > today)
+    if (moment(actual_date_attended).isAfter(today))
       return {
         code: 400,
         message: "Date attended cannot be greater than today"
       };
 
     if (
-      moment(fake_missed_appointment.appntmnt_date) >
-      moment(actual_date_attended)
+      moment(fake_missed_appointment.appntmnt_date).isAfter(
+        actual_date_attended
+      )
     ) {
       return Appointment.update(
         {
@@ -144,10 +144,16 @@ async function clearFakeAppointment(message, user) {
           };
         });
     } else {
-      let diffDays = parseInt(
-        today.diff(fake_missed_appointment.appntmnt_date, "days")
-      );
+      console.log(fake_missed_appointment.appntmnt_date);
+      console.log(actual_date_attended);
 
+      let diffDays = parseInt(
+        moment(actual_date_attended).diff(
+          fake_missed_appointment.appntmnt_date,
+          "days"
+        )
+      );
+      console.log(diffDays);
       let changed_app_status;
       if (diffDays === 0) {
         changed_app_status = "Notified";
