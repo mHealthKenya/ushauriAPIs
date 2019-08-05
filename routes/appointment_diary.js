@@ -7,6 +7,7 @@ const registerClient = require("./processes/registration");
 const consentClient = require("./processes/consent");
 const processAppointment = require("./processes/process_appointment");
 const clearFakeMissed = require("./processes/clear_fake_missed");
+const processDefaulterDiary = require("./processes/process_defaulter_diary");
 
 router.post("/", async (req, res) => {
   let message = req.body.msg;
@@ -31,6 +32,13 @@ router.post("/", async (req, res) => {
     res.status(`${result.code}`).send(`${result.message}`);
   } else if (message.includes("FAKE")) {
     let result = await clearFakeMissed(message, user);
+    res.status(`${result.code}`).send(`${result.message}`);
+  } else if (
+    message.includes("MSD") ||
+    message.includes("DF") ||
+    message.includes("LTFU")
+  ) {
+    let result = await processDefaulterDiary(message, user);
     res.status(`${result.code}`).send(`${result.message}`);
   }
 });
