@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 const registerClient = require("./processes/registration");
 const consentClient = require("./processes/consent");
+const processAppointment = require("./processes/process_appointment");
 
 router.post("/", async (req, res) => {
   let message = req.body.msg;
@@ -23,6 +24,9 @@ router.post("/", async (req, res) => {
     res.status(`${result.code}`).send(`${result.message}`);
   } else if (message.includes("CON")) {
     let result = await consentClient(message, user);
+    res.status(`${result.code}`).send(`${result.message}`);
+  } else if (message.includes("APP")) {
+    let result = await processAppointment(message, user);
     res.status(`${result.code}`).send(`${result.message}`);
   }
 });
@@ -49,9 +53,13 @@ router.get("/:id", async (req, res) => {
       if (message.includes("Reg")) {
         let result = await registerClient(message, user);
         let sender = await Sender(phone, `${result.message}`);
+        res.send(sender);
       } else if (message.includes("CON")) {
         let result = await consentClient(message, user);
         let sender = await Sender(phone, `${result.message}`);
+        res.send(sender);
+      } else if (message.includes("APP")) {
+        res.send("IN process Appointment SMS");
       }
     }
 

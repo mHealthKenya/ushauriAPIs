@@ -79,8 +79,8 @@ async function registerClient(message, user) {
   enrollment_date = moment(enrollment_date, "DD/MM/YYYY").format("YYYY-MM-DD");
   art_start_date = moment(art_start_date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
-  var b = moment(new Date());
-  var diffDays = b.diff(dob, "days");
+  let b = moment(new Date());
+  let diffDays = b.diff(dob, "days");
   let group_id;
   if (diffDays >= 3650 && diffDays <= 6935) {
     //Adolescent
