@@ -34,6 +34,7 @@ async function processAppointment(message, user) {
   const appointment_other = variables[4];
   let appointment_kept = variables[5];
   const old_appointment_id = variables[6];
+  let today = moment(new Date());
 
   if (appointment_kept == 1) {
     appointment_kept = "Yes";
@@ -61,134 +62,268 @@ async function processAppointment(message, user) {
       message: ` Appointment was not scheduled in the  system , Client: ${upn} is not active in the system.`
     };
 
-  if (old_appointment_id == "-1") {
-    let existing_appointments = await Appointment.count({
-      where: {
-        client_id: client.id
-      }
-    });
-
-    if (existing_appointments === 0) {
-      //new booking, no record of previous appointment
-      return {
-        code: 200,
-        message: ` New client.`
-      };
-    } else {
-      // appointment history exists
-
-      let active_appointment = await Appointment.count({
-        where: { client_id: client.id, active_app: "1" }
-      });
-      if (active_appointment > 0) {
-        //check if date of appointment is less than today
-        //if less, redirect user to the defaulter diary to update appointment
-        //if today, mark current appointment as kept, create new appointment
-        //if greater than today, if current active date is equal to new app date, return error
-        //if new app date - today > 30 days, return cannot book unscheduled > 30 days
-        // if less than 30 days, book unscheduled
-
-        return {
-          code: 200,
-          message: `Active Appointment exits.`
-        };
-      } else {
-        //no active appointment exits, create new appointemnt
-        return {
-          code: 200,
-          message: ` No active appointment`
-        };
-      }
-    }
-  } else {
-    //get appointment where id is old app id
-    // if old app is today, confirm current as kept, create new
-
-    let current_active_appointment = await Appointment.findByPk(
-      old_appointment_id
-    );
-    if (!current_active_appointment)
-      return {
-        code: 400,
-        message: `The appointment you tried to update does not exist.`
-      };
-    let active_appointment_date = moment(
-      current_active_appointment.appntmnt_date
-    );
-    let today = moment(new Date());
-
-    let diffDays = today.diff(active_appointment_date, "days");
-    if (diffDays === 0) {
-      //mark active appointment as kept
-
-      const active_appointment_on_same_date = await Appointment.count({
+  if (moment(app_date) > today) {
+    if (old_appointment_id == "-1") {
+      let existing_appointments = await Appointment.count({
         where: {
-          appntmnt_date: app_date,
           client_id: client.id
         }
       });
 
-      if (active_appointment_on_same_date === 0) {
-        return Appointment.update(
-          {
-            appointment_kept: "Yes",
-            date_attended: today,
-            active_app: "0",
-            updated_at: today,
-            updated_by: user.id,
-            app_status: "Notified",
-            visit_type: "Scheduled"
-          },
-          { returning: true, where: { id: old_appointment_id } }
-        )
-          .then(([old_app, updated]) => {
-            if (updated) {
-              //create new appointment
+      if (existing_appointments === 0) {
+        //new booking, no record of previous appointment
+        let create_appointment = Appointment.create({
+          app_status: "Booked",
+          appntmnt_date: app_date,
+          status: "Active",
+          sent_status: "Sent",
+          client_id: client.id,
+          created_at: today,
+          created_by: user.id,
+          app_type_1: appointment_type,
+          entry_point: "Mobile",
+          visit_type: "Scheduled",
+          active_app: "1"
+        });
+        if (create_appointment) {
+          return {
+            code: 200,
+            message: `Appointment for ${upn} on ${app_date} was created successfully`
+          };
+        } else {
+          return {
+            code: 500,
+            message: "An error occured, could not create Appointment"
+          };
+        }
+      } else {
+        // appointment history exists
 
-              let create_appointment = Appointment.create({
-                app_status: "Booked",
-                appntmnt_date: app_date,
-                status: "Active",
-                sent_status: "Sent",
-                client_id: client.id,
-                created_at: today,
-                created_by: user.id,
-                app_type_1: appointment_type,
-                entry_point: "Mobile",
-                visit_type: "Scheduled",
-                active_app: "1"
-              });
-              if (create_appointment) {
-                return {
-                  code: 200,
-                  message: `Appointment for ${upn} on ${app_date} was created successfully`
-                };
-              } else {
+        let active_appointment = await Appointment.count({
+          where: { client_id: client.id, active_app: "1" }
+        });
+        if (active_appointment > 0) {
+          //check if date of appointment is less than today
+          let active_appointment_details = await Appointment.findOne({
+            where: { client_id: client.id, active_app: "1" }
+          });
+          //if less, redirect user to the defaulter diary to update appointment
+
+          if (moment(active_appointment_details.appntmnt_date) < today) {
+            return {
+              code: 400,
+              message: `Client ${upn} missed an appointment on date ${
+                active_appointment_details.appntmnt_date
+              }. Kindly update them from the deafulter diary`
+            };
+          } else if (
+            moment(active_appointment_details.appntmnt_date) == today
+          ) {
+            return {
+              code: 400,
+              message: `Client ${upn} has an active appointment today. Kindly update them from today's appointments`
+            };
+          } else {
+            //if greater than today, if current active date is equal to new app date, return error
+            if (
+              moment(active_appointment_details.appntmnt_date) ==
+              moment(app_date)
+            ) {
+              return {
+                code: 400,
+                message: `Client ${upn} already has an appointment on ${app_date} and cannot be booked again.`
+              };
+            }
+
+            //if new app date - today > 30 days, return cannot book unscheduled > 30 days
+
+            let diff_days = moment(app_date).diff(today, "days");
+
+            if (diff_days > 30) {
+              return {
+                code: 400,
+                message: `Cannot book an Un-Scheduled visit which is more than 30 days from the original date of appointment`
+              };
+            }
+            // if less than 30 days, book unscheduled
+
+            return Appointment.update(
+              {
+                appointment_kept: "Yes",
+                date_attended: today,
+                active_app: "0",
+                updated_at: today,
+                unscheduled_date: today,
+                updated_by: user.id,
+                app_status: "Notified",
+                visit_type: "Un-Scheduled"
+              },
+              { returning: true, where: { id: active_appointment_details.id } }
+            )
+              .then(([old_app, updated]) => {
+                if (updated) {
+                  //create new appointment
+
+                  let create_appointment = Appointment.create({
+                    app_status: "Booked",
+                    appntmnt_date: app_date,
+                    status: "Active",
+                    sent_status: "Sent",
+                    client_id: client.id,
+                    created_at: today,
+                    created_by: user.id,
+                    app_type_1: appointment_type,
+                    entry_point: "Mobile",
+                    visit_type: "Scheduled",
+                    active_app: "1"
+                  });
+                  if (create_appointment) {
+                    return {
+                      code: 200,
+                      message: `Appointment for ${upn} on ${app_date} was created successfully, existing appointment marked as Un-Scheduled`
+                    };
+                  } else {
+                    return {
+                      code: 500,
+                      message: "An error occured, could not create Appointment"
+                    };
+                  }
+                }
+              })
+              .catch(e => {
                 return {
                   code: 500,
                   message: "An error occured, could not create Appointment"
                 };
-              }
-            }
-          })
-          .catch(e => {
+              });
+          }
+
+          return {
+            code: 200,
+            message: active_appointment_details.id
+          };
+        } else {
+          //no active appointment exits, create new appointemnt
+          let create_appointment = Appointment.create({
+            app_status: "Booked",
+            appntmnt_date: app_date,
+            status: "Active",
+            sent_status: "Sent",
+            client_id: client.id,
+            created_at: today,
+            created_by: user.id,
+            app_type_1: appointment_type,
+            entry_point: "Mobile",
+            visit_type: "Scheduled",
+            active_app: "1"
+          });
+          if (create_appointment) {
+            return {
+              code: 200,
+              message: `Appointment for ${upn} on ${app_date} was created successfully`
+            };
+          } else {
             return {
               code: 500,
               message: "An error occured, could not create Appointment"
             };
-          });
-      } else {
-        return {
-          code: 400,
-          message: `Client ${upn} already has an appointment on ${app_date} and cannot be booked again.`
-        };
+          }
+        }
       }
     } else {
-      return {
-        code: 500,
-        message: "An error occured, could not create Appointment"
-      };
+      //get appointment where id is old app id
+      // if old app is today, confirm current as kept, create new
+
+      let current_active_appointment = await Appointment.findByPk(
+        old_appointment_id
+      );
+      if (!current_active_appointment)
+        return {
+          code: 400,
+          message: `The appointment you tried to update does not exist.`
+        };
+      let active_appointment_date = moment(
+        current_active_appointment.appntmnt_date
+      );
+
+      let diffDays = today.diff(active_appointment_date, "days");
+      if (diffDays === 0) {
+        //mark active appointment as kept
+
+        const active_appointment_on_same_date = await Appointment.count({
+          where: {
+            appntmnt_date: app_date,
+            client_id: client.id
+          }
+        });
+
+        if (active_appointment_on_same_date === 0) {
+          return Appointment.update(
+            {
+              appointment_kept: "Yes",
+              date_attended: today,
+              active_app: "0",
+              updated_at: today,
+              updated_by: user.id,
+              app_status: "Notified",
+              visit_type: "Scheduled"
+            },
+            { returning: true, where: { id: old_appointment_id } }
+          )
+            .then(([old_app, updated]) => {
+              if (updated) {
+                //create new appointment
+
+                let create_appointment = Appointment.create({
+                  app_status: "Booked",
+                  appntmnt_date: app_date,
+                  status: "Active",
+                  sent_status: "Sent",
+                  client_id: client.id,
+                  created_at: today,
+                  created_by: user.id,
+                  app_type_1: appointment_type,
+                  entry_point: "Mobile",
+                  visit_type: "Scheduled",
+                  active_app: "1"
+                });
+                if (create_appointment) {
+                  return {
+                    code: 200,
+                    message: `Appointment for ${upn} on ${app_date} was created successfully`
+                  };
+                } else {
+                  return {
+                    code: 500,
+                    message: "An error occured, could not create Appointment"
+                  };
+                }
+              }
+            })
+            .catch(e => {
+              return {
+                code: 500,
+                message: "An error occured, could not create Appointment"
+              };
+            });
+        } else {
+          return {
+            code: 400,
+            message: `Client ${upn} already has an appointment on ${app_date} and cannot be booked again.`
+          };
+        }
+      } else {
+        return {
+          code: 500,
+          message: "An error occured, could not create Appointment"
+        };
+      }
     }
+  } else {
+    return {
+      code: 400,
+      message: `Appointments can only be booked for dates greater than today.`
+    };
   }
 }
 
