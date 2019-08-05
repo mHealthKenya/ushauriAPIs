@@ -163,28 +163,10 @@ async function registerClient(message, user) {
                         let message = await Message.findAll({
                             where: { message_type_id: 3, language_id: language }
                         });
-
-                        //here we loop through an object
-                        var new_message;
                         Object.values(message).forEach((value) => {
-                            new_message = value.message;
-                            if (value.logic_flow == 1) {
-                                new_message = new_message.replace('XXX', f_name)
-
-                            }
-                            if (primary_phone_no != null) {
-                                let phone = primary_phone_no
-                            } else if (primary_phone_no == null && alt_phone_no != null) {
-                                let phone = alt_phone_no
-                            } else if (primary_phone_no == null && alt_phone_no == null && buddy_phone_no != null) {
-                                let phone = buddy_phone_no
-                            }
-                            Sender('0705255873', new_message);
-
-                        })
-
-
-
+                                console.log(value);
+                            })
+                            //console.log(message);
 
 
 

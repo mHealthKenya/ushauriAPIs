@@ -165,9 +165,9 @@ async function registerClient(message, user) {
                         });
 
                         //here we loop through an object
-                        var new_message;
+
                         Object.values(message).forEach((value) => {
-                            new_message = value.message;
+                            let new_message = value.message;
                             if (value.logic_flow == 1) {
                                 new_message = new_message.replace('XXX', f_name)
 
@@ -179,11 +179,11 @@ async function registerClient(message, user) {
                             } else if (primary_phone_no == null && alt_phone_no == null && buddy_phone_no != null) {
                                 let phone = buddy_phone_no
                             }
-                            Sender('0705255873', new_message);
+
+                            let Sender = await Sender(phone, new_message);
+
 
                         })
-
-
 
 
 

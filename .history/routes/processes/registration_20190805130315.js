@@ -155,36 +155,15 @@ async function registerClient(message, user) {
                 }
             })
             .then(async([client, created]) => {
-                if (created) {
-                    //console.log(client.id);
+                    if (created) {
+                        console.log(client.id);
 
-                    if (sms_enable == 'Yes' && language != '-1') {
-                        // let sender = Sender
-                        let message = await Message.findAll({
-                            where: { message_type_id: 3, language_id: language }
-                        });
-
-                        //here we loop through an object
-                        var new_message;
-                        Object.values(message).forEach((value) => {
-                            new_message = value.message;
-                            if (value.logic_flow == 1) {
-                                new_message = new_message.replace('XXX', f_name)
-
-                            }
-                            if (primary_phone_no != null) {
-                                let phone = primary_phone_no
-                            } else if (primary_phone_no == null && alt_phone_no != null) {
-                                let phone = alt_phone_no
-                            } else if (primary_phone_no == null && alt_phone_no == null && buddy_phone_no != null) {
-                                let phone = buddy_phone_no
-                            }
-                            Sender('0705255873', new_message);
-
-                        })
-
-
-
+                        // if (sms_enable == 'Yes' && language != '-1') {
+                        //     // let sender = Sender
+                        //     let message = await Message.findAll({
+                        //         where: { message_type_id: 3, [Op.and]: { languade_id: language } }
+                        //     });
+                        //     console.log(message);
 
 
 
@@ -201,63 +180,63 @@ async function registerClient(message, user) {
                     };
                 }
             })
-            .catch(e => {
-                return { code: 500, message: e.message };
-            });
-    } else if (transaction_type == 2) {
-        //save the client details
-        return Client.update({
-                mfl_code: mfl_code,
-                f_name: f_name,
-                m_name: m_name,
-                l_name: l_name,
-                dob: dob,
-                gender: gender,
-                marital: marital,
-                client_status: condition,
-                enrollment_date: enrollment_date,
-                group_id: group_id,
-                phone_no: primary_phone_no,
-                alt_phone_no: alt_phone_no,
-                buddy_phone_no: trtmnt_buddy_phone_no,
-                language_id: language,
-                smsenable: sms_enable,
-                partner_id: partner_id,
-                status: client_status,
-                art_date: art_start_date,
-                created_at: b,
-                entry_point: "MOB",
-                created_by: user_id,
-                client_type: "New",
-                txt_time: messaging_time,
-                motivational_enable: motivation_enable,
-                wellness_enable: motivation_enable,
-                national_id: national_id,
-                file_no: serial_no,
-                clinic_id: clinic_id
-            }, { returning: true, where: { clinic_number: upn } })
-            .then(([client, updated]) => {
-                if (updated) {
-                    return {
-                        code: 200,
-                        message: `Client ${upn} was updated successfully`
-                    };
-                } else {
-                    return {
-                        code: 200,
-                        message: `Could not update client ${upn}`
-                    };
-                }
-            })
-            .catch(e => {
-                return { code: 500, message: e.message };
-            });
-    } else {
-        return {
-            code: 400,
-            message: "Not a valid transaction type"
-        };
-    }
+    .catch(e => {
+        return { code: 500, message: e.message };
+    });
+} else if (transaction_type == 2) {
+    //save the client details
+    return Client.update({
+            mfl_code: mfl_code,
+            f_name: f_name,
+            m_name: m_name,
+            l_name: l_name,
+            dob: dob,
+            gender: gender,
+            marital: marital,
+            client_status: condition,
+            enrollment_date: enrollment_date,
+            group_id: group_id,
+            phone_no: primary_phone_no,
+            alt_phone_no: alt_phone_no,
+            buddy_phone_no: trtmnt_buddy_phone_no,
+            language_id: language,
+            smsenable: sms_enable,
+            partner_id: partner_id,
+            status: client_status,
+            art_date: art_start_date,
+            created_at: b,
+            entry_point: "MOB",
+            created_by: user_id,
+            client_type: "New",
+            txt_time: messaging_time,
+            motivational_enable: motivation_enable,
+            wellness_enable: motivation_enable,
+            national_id: national_id,
+            file_no: serial_no,
+            clinic_id: clinic_id
+        }, { returning: true, where: { clinic_number: upn } })
+        .then(([client, updated]) => {
+            if (updated) {
+                return {
+                    code: 200,
+                    message: `Client ${upn} was updated successfully`
+                };
+            } else {
+                return {
+                    code: 200,
+                    message: `Could not update client ${upn}`
+                };
+            }
+        })
+        .catch(e => {
+            return { code: 500, message: e.message };
+        });
+} else {
+    return {
+        code: 400,
+        message: "Not a valid transaction type"
+    };
+}
 }
 
 module.exports = registerClient;

@@ -12,7 +12,7 @@ const Message = sequelize.sequelize.define(
         target_group: Sequelize.ENUM("All", "Adult", "Adolescent", "Male", "Female"),
         message_type_id: Sequelize.INTEGER,
         logic_flow: Sequelize.INTEGER,
-        language_id: Sequelize.INTEGER,
+        languade_id: Sequelize.INTEGER,
         message_group_id: Sequelize.INTEGER,
         status: Sequelize.ENUM("Active", "In Active", "Disabled"),
         identifier: Sequelize.STRING,

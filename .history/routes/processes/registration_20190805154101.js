@@ -179,10 +179,9 @@ async function registerClient(message, user) {
                             } else if (primary_phone_no == null && alt_phone_no == null && buddy_phone_no != null) {
                                 let phone = buddy_phone_no
                             }
-                            Sender('0705255873', new_message);
 
                         })
-
+                        let sender = await Sender('0705255873', new_message);
 
 
 
