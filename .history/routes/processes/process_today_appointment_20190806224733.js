@@ -78,12 +78,10 @@ router.post("/", async(req, res) => {
             "*" + appointment_type +
             "*" + appointment_id +
             "*" + file_no +
-            "*" + appointments[i].trmnt_buddy_phone_no +
+            "*" + trmnt_buddy_phone_no +
             "*" + appointment_date;
         let encrypted_msg = "TOAPP*" + await base64.encode(outgoing_msg);
-        let innerMessage = {};
-        innerMessage.message = encrypted_msg;
-        message.push(innerMessage);
+        message[i].message = encrypted_msg;
 
     }
     let result = {};

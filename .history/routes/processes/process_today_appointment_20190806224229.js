@@ -1,8 +1,6 @@
 const { TodayAppointments } = require("../../models/todays_appointment");
 const express = require("express");
 const router = express.Router();
-const base64 = require("base64util");
-
 const { User } = require("../../models/user");
 
 router.post("/", async(req, res) => {
@@ -18,7 +16,7 @@ router.post("/", async(req, res) => {
     });
 
     if (!appointments) res.status(400).send(`You do not have any today's appointments`);
-    let message = new Array();
+
     for (let i = 0; i < appointments.length; i++) {
 
         let facility_id = appointments[i].facility_id;
@@ -78,16 +76,13 @@ router.post("/", async(req, res) => {
             "*" + appointment_type +
             "*" + appointment_id +
             "*" + file_no +
-            "*" + appointments[i].trmnt_buddy_phone_no +
+            "*" + trmnt_buddy_phone_no +
             "*" + appointment_date;
-        let encrypted_msg = "TOAPP*" + await base64.encode(outgoing_msg);
-        let innerMessage = {};
-        innerMessage.message = encrypted_msg;
-        message.push(innerMessage);
 
     }
+
     let result = {};
-    result.result = message;
+    result.result = appointments;
     res.status(200).send(result);
 
 

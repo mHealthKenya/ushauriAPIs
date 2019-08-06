@@ -1,8 +1,6 @@
 const { TodayAppointments } = require("../../models/todays_appointment");
 const express = require("express");
 const router = express.Router();
-const base64 = require("base64util");
-
 const { User } = require("../../models/user");
 
 router.post("/", async(req, res) => {
@@ -18,24 +16,8 @@ router.post("/", async(req, res) => {
     });
 
     if (!appointments) res.status(400).send(`You do not have any today's appointments`);
-    let message = new Array();
+
     for (let i = 0; i < appointments.length; i++) {
-
-        let facility_id = appointments[i].facility_id;
-        let user_phone_no = appointments[i].user_phone_no;
-        let mfl_code = appointments[i].facility_id;
-        let user_id = appointments[i].id;
-        let clinic_id = appointments[i].clinic_id;
-        let appointment_id = appointments[i].appointment_id;
-        let CCC = appointments[i].CCC;
-        let client_name = appointments[i].client_name;
-        let client_phone_no = appointments[i].client_phone_no;
-        let appointment_type = appointments[i].appointment_type;
-        let appointment_date = appointments[i].appntmnt_date;
-        let file_no = appointments[i].file_no;
-        let buddy_phone_no = appointments[i].buddy_phone_no;
-        appointments[i].trmnt_buddy_phone_no = '';
-
         if (appointments[i].buddy_phone_no == "") {
             appointments[i].trmnt_buddy_phone_no = '-1';
         } else {
@@ -60,34 +42,24 @@ router.post("/", async(req, res) => {
             appointments[i].client_phone_no = appointments[i].client_phone_no;
         }
 
-        if (appointments[i].appointment_type == "") {
+        if (appointments[i].appointment_type == ""
+            or empty(appointments[i].appointment_type)) {
             appointments[i].appointment_type = '-1';
         } else {
             appointments[i].appointment_type = appointments[i].appointment_type;
         }
 
 
-        if (appointments[i].appointment_id == "") {
+        if (appointments[i].appointment_id == ""
+            or empty(appointments[i].appointment_id)) {
             appointments[i].appointment_id = '-1';
         } else {
             appointments[i].appointment_id = appointments[i].appointment_id;
         }
-
-        let outgoing_msg = CCC + "*" + client_name +
-            "*" + client_phone_no +
-            "*" + appointment_type +
-            "*" + appointment_id +
-            "*" + file_no +
-            "*" + appointments[i].trmnt_buddy_phone_no +
-            "*" + appointment_date;
-        let encrypted_msg = "TOAPP*" + await base64.encode(outgoing_msg);
-        let innerMessage = {};
-        innerMessage.message = encrypted_msg;
-        message.push(innerMessage);
-
     }
+
     let result = {};
-    result.result = message;
+    result.result = appointments;
     res.status(200).send(result);
 
 

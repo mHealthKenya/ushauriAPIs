@@ -18,7 +18,7 @@ router.post("/", async(req, res) => {
     });
 
     if (!appointments) res.status(400).send(`You do not have any today's appointments`);
-    let message = new Array();
+    let result = new Array();
     for (let i = 0; i < appointments.length; i++) {
 
         let facility_id = appointments[i].facility_id;
@@ -78,16 +78,13 @@ router.post("/", async(req, res) => {
             "*" + appointment_type +
             "*" + appointment_id +
             "*" + file_no +
-            "*" + appointments[i].trmnt_buddy_phone_no +
+            "*" + trmnt_buddy_phone_no +
             "*" + appointment_date;
         let encrypted_msg = "TOAPP*" + await base64.encode(outgoing_msg);
-        let innerMessage = {};
-        innerMessage.message = encrypted_msg;
-        message.push(innerMessage);
+        result[i].message = encrypted_msg;
 
     }
-    let result = {};
-    result.result = message;
+
     res.status(200).send(result);
 
 
