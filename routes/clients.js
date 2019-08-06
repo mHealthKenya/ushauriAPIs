@@ -1,7 +1,7 @@
 const { validateClient, Client } = require("../models/client");
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 router.get("/", async (req, res) => {
@@ -98,8 +98,8 @@ router.post("/", async (req, res) => {
       .send(`Email: ${req.body.email} already exists in the system.`);
 
   client = req.body;
-  const salt = await bcrypt.genSalt(10);
-  client.password = await bcrypt.hash(client.phone_no, salt);
+  // const salt = await bcrypt.genSalt(10);
+  // client.password = await bcrypt.hash(client.phone_no, salt);
 
   client.first_access = "Yes";
   if ((client.access_level = "Admin")) {
