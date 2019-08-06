@@ -24,14 +24,8 @@ async function moveClient(message, user) {
     const variables = decoded_message.split("*");
     const ccc_number = variables[0];
     const clinic_id = variables[1];
-    let clinic = await Clinic.findByPk(clinic_id);
+    let Clinic = await Clinic.findByPk(clinic_id);
     let client = await Client.findOne({ where: { clinic_number: ccc_number } });
-
-    if (!clinic)
-        return {
-            code: 400,
-            message: `Clinic: ${clinic_id} does not exist in the system.`
-        }
     if (!client)
         return {
             code: 400,
@@ -45,21 +39,8 @@ async function moveClient(message, user) {
     if (client.clinic_id == clinic_id)
         return {
             code: 400,
-            message: `Client: ${ccc_number} already exists in the  Clinic : ${clinic.name} and cannot be moved . `
+            message: `Client: ${ccc_number} already exists in the  Clinic : ${clinic_id} and cannot be moved . `
         };
-    return Client.update({
-            clinic_id: clinic.id
-        }, { returning: true, where: { clinic_number: ccc_number } })
-        .then(([client, updated]) => {
-            return {
-                code: 200,
-                message: `Client ${ccc_number} was successfully moved to new Clinic: ${clinic.name} `
-            };
-        })
-        .catch(e => {
-            return { code: 500, message: `Could not move client ${ccc_number} to the new clinic.` };
-        });
-
 
 
 }

@@ -8,7 +8,6 @@ const consentClient = require("./processes/consent");
 const processAppointment = require("./processes/process_appointment");
 const clearFakeMissed = require("./processes/clear_fake_missed");
 const processDefaulterDiary = require("./processes/process_defaulter_diary");
-const moveClient = require("./processes/clinic_movement");
 
 router.post("/", async(req, res) => {
     let message = req.body.msg;

@@ -45,21 +45,8 @@ async function moveClient(message, user) {
     if (client.clinic_id == clinic_id)
         return {
             code: 400,
-            message: `Client: ${ccc_number} already exists in the  Clinic : ${clinic.name} and cannot be moved . `
+            message: `Client: ${ccc_number} already exists in the  Clinic : ${Clinic.name} and cannot be moved . `
         };
-    return Client.update({
-            clinic_id: clinic.id
-        }, { returning: true, where: { clinic_number: ccc_number } })
-        .then(([client, updated]) => {
-            return {
-                code: 200,
-                message: `Client ${ccc_number} was successfully moved to new Clinic: ${clinic.name} `
-            };
-        })
-        .catch(e => {
-            return { code: 500, message: `Could not move client ${ccc_number} to the new clinic.` };
-        });
-
 
 
 }

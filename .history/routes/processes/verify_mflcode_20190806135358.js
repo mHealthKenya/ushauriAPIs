@@ -16,6 +16,7 @@ router.post("/", async(req, res) => {
         .send(`Phone Number: ${phone} is not registered in the system`);
     let result = {};
     result["result"] = { mfl_code: user.facility_id };
+    // result.push({ mfl_code: user.facility_id });
     res.status(200).send(Object.entries(result)[0]);
 })
 module.exports = router;

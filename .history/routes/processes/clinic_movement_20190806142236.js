@@ -57,7 +57,7 @@ async function moveClient(message, user) {
             };
         })
         .catch(e => {
-            return { code: 500, message: `Could not move client ${ccc_number} to the new clinic.` };
+            return { code: 500, message: e.message };
         });
 
 
