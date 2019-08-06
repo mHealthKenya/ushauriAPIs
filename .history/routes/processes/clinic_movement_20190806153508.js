@@ -1,32 +1,38 @@
 const { Client } = require("../../models/client");
+const { Clinic } = require("../../models/clinic");
 const moment = require("moment");
 const base64 = require("base64util");
-async function consentClient(message, user) {
+
+async function moveClient(message, user) {
     message = message.split("*");
     message = message[1];
 
     message = message.split("#");
     let decoded_message = await base64.decode(message[0]);
+    // return {
+    //     code: 200,
+    //     message: message[0]
+    // }
 
-    // check if it is a valid base 64 encode
-    if (!(base64.encode(decoded_message) === message[0]))
-        return {
-            code: 400,
-            message: "Your application needs to be updated to use this feature"
-        };
+    //check validity of base 64 encode
+    // if (!(base64.encode(decoded_message) === message[0]))
+    //     return {
+    //         code: 400,
+    //         message: "Your application needs to be updated to use this feature"
+    //     }
 
-    decoded_message = "CON*" + decoded_message;
     const variables = decoded_message.split("*");
-
-    const message_code = variables[0];
-    const ccc_number = variables[1];
-    const consent_date = variables[2];
-    let preferred_time = variables[3];
-    const client_phone_no = variables[4];
-    preferred_time = preferred_time.substring(0, 2);
-    let consented = moment(consent_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+    const ccc_number = variables[0];
+    const clinic_id = variables[1];
+    let clinic = await Clinic.findByPk(clinic_id);
     let today = moment(new Date()).format("YYYY-MM-DD");
     let client = await Client.findOne({ where: { clinic_number: ccc_number } });
+
+    if (!clinic)
+        return {
+            code: 400,
+            message: `Clinic: ${clinic_id} does not exist in the system.`
+        }
     if (!client)
         return {
             code: 400,
@@ -37,27 +43,27 @@ async function consentClient(message, user) {
             code: 400,
             message: `Client: ${ccc_number} is not active in the system.`
         };
-    if (client.smsenable == "Yes")
+    if (client.clinic_id == clinic_id)
         return {
             code: 400,
-            message: `Client: ${ccc_number} is already consented in the system.`
+            message: `Client: ${ccc_number} already exists in the  Clinic : ${clinic.name} and cannot be moved . `
         };
-
     return Client.update({
-            smsenable: "Yes",
-            consent_date: consented,
-            phone_no: client_phone_no,
+            clinic_id: clinic.id,
             updated_by: user.id,
             updated_at: today
         }, { returning: true, where: { clinic_number: ccc_number } })
         .then(([client, updated]) => {
             return {
                 code: 200,
-                message: `Client ${ccc_number} was successfully consented in the system`
+                message: `Client ${ccc_number} was successfully moved to new Clinic: ${clinic.name} `
             };
         })
         .catch(e => {
-            return { code: 500, message: `Could not consent client ${ccc_number} ` };
+            return { code: 500, message: `Could not move client ${ccc_number} to the new clinic.` };
         });
+
+
+
 }
-module.exports = consentClient;
+module.exports = moveClient;

@@ -75,6 +75,9 @@ router.get("/:id", async (req, res) => {
       } else if (message.includes("APP")) {
         let result = await processAppointment(message, user);
         Sender(phone, `${result.message}`);
+      } else if (message.includes("MOVECLINIC")) {
+        let result = await moveClient(message, user);
+        Sender(phone, `${result.message}`);
       } else if (
         message.includes("MSD") ||
         message.includes("DF") ||
