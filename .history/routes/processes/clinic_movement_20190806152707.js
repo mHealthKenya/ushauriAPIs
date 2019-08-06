@@ -7,19 +7,19 @@ async function moveClient(message, user) {
     message = message.split("*");
     message = message[1];
 
-    message = message.split("#");
+    message_ = message.split("#");
     let decoded_message = await base64.decode(message[0]);
-    // return {
-    //     code: 200,
-    //     message: message[0]
-    // }
+    return {
+        code: 200,
+        message: message_
+    }
 
     //check validity of base 64 encode
-    // if (!(base64.encode(decoded_message) === message[0]))
-    //     return {
-    //         code: 400,
-    //         message: "Your application needs to be updated to use this feature"
-    //     }
+    if (!(base64.encode(decoded_message) === message[0]))
+        return {
+            code: 400,
+            message: "Your application needs to be updated to use this feature"
+        }
 
     const variables = decoded_message.split("*");
     const ccc_number = variables[0];
