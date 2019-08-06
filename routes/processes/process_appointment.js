@@ -34,7 +34,7 @@ async function processAppointment(message, user) {
   const appointment_other = variables[4];
   let appointment_kept = variables[5];
   const old_appointment_id = variables[6];
-  let today = moment(new Date().toDateString());
+  let today = moment(new Date().toDateString()).format("YYYY-MM-DD");
 
   if (appointment_kept == 1) {
     appointment_kept = "Yes";
@@ -60,7 +60,8 @@ async function processAppointment(message, user) {
       code: 400,
       message: ` Appointment was not scheduled in the  system , Client: ${upn} is not active in the system.`
     };
-  if (moment(new_app_date).isAfter(new Date().toDateString())) {
+
+  if (app_date > today) {
     if (old_appointment_id == "-1") {
       let existing_appointments = await Appointment.count({
         where: {
@@ -287,6 +288,7 @@ async function processAppointment(message, user) {
                   active_app: "1"
                 });
                 if (create_appointment) {
+                  console.log(`APP ID: ${create_appointment.id}`);
                   return {
                     code: 200,
                     message: `Appointment for ${upn} on ${app_date} was created successfully`
