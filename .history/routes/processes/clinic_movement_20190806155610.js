@@ -16,7 +16,7 @@ async function moveClient(message, user) {
     // }
 
     //check validity of base 64 encode
-    if (!(base64.encode(decoded_message) === message[0].trim()))
+    if (!(base64.encode(decoded_message) === message[0]))
         return {
             code: 400,
             message: "Your application needs to be updated to use this feature"

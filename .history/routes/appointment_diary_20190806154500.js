@@ -83,11 +83,11 @@ router.get("/:id", async(req, res) => {
             }
         }
 
-        Incoming.update({
-                processed: "Yes"
-            }, { returning: true, where: { id: incoming_id } })
-            .then(([client, updated]) => {})
-            .catch(e => {});
+        // Incoming.update({
+        //         processed: "Yes"
+        //     }, { returning: true, where: { id: incoming_id } })
+        //     .then(([client, updated]) => {})
+        //     .catch(e => {});
     }
     res.send(true);
 });
