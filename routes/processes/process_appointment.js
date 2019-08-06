@@ -85,6 +85,14 @@ async function processAppointment(message, user) {
           active_app: "1"
         });
         if (create_appointment) {
+          if (appointment_type == "6") {
+            OtherAppointmentType.create({
+              name: appointment_other,
+              created_by: user.id,
+              created_at: today,
+              appointment_id: create_appointment.id
+            });
+          }
           return {
             code: 200,
             message: `Appointment for ${upn} on ${app_date} was created successfully`
@@ -288,7 +296,14 @@ async function processAppointment(message, user) {
                   active_app: "1"
                 });
                 if (create_appointment) {
-                  console.log(`APP ID: ${create_appointment.id}`);
+                  if (appointment_type == "6") {
+                    OtherAppointmentType.create({
+                      name: appointment_other,
+                      created_by: user.id,
+                      created_at: today,
+                      appointment_id: create_appointment.id
+                    });
+                  }
                   return {
                     code: 200,
                     message: `Appointment for ${upn} on ${app_date} was created successfully`

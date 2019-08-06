@@ -3,6 +3,10 @@ const moment = require("moment");
 const base64 = require("base64util");
 const { Appointment } = require("../../models/appointment");
 const { clientOutcome } = require("../../models/client_outcome");
+const {
+  OtherAppointmentType
+} = require("../../models/other_appointment_types");
+const { OtherFinalOutcome } = require("../../models/other_final_outcome");
 
 async function processDefaulterDiary(message, user) {
   message = message.split("*");
@@ -124,6 +128,7 @@ async function processDefaulterDiary(message, user) {
     tracing_cost: tracing_cost
   });
   if (create_outcome) {
+    let client_outcome_id = create_outcome.id;
     let no_calls = appointment_details.no_calls;
     if (no_calls < 1) {
       no_calls = 1;
@@ -140,130 +145,148 @@ async function processDefaulterDiary(message, user) {
     )
       .then(([client, updated]) => {
         if (final_outcome == "NULL" || final_outcome == "") {
-        }
-        if (final_outcome == 1) {
-          /*
+        } else {
+          if (final_outcome == 1) {
+            /*
 
            * Declined Care
               * leave appointment as open and follow up later with the  client.
               * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
            *  */
-          Appointment.update(
-            {
-              fnl_trcing_outocme: "3",
-              fnl_outcome_dte: today,
-              updated_by: user.id,
-              updated_at: today
-            },
-            { returning: true, where: { id: appointment_details.id } }
-          )
-            .then((updated, appointment) => {})
-            .catch(e => {});
-        }
-        if (final_outcome == 2) {
-          app_date = moment(app_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+            Appointment.update(
+              {
+                fnl_trcing_outocme: "3",
+                fnl_outcome_dte: today,
+                updated_by: user.id,
+                updated_at: today
+              },
+              { returning: true, where: { id: appointment_details.id } }
+            )
+              .then((updated, appointment) => {})
+              .catch(e => {});
+          }
+          if (final_outcome == 2) {
+            app_date = moment(app_date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
-          /*
+            /*
 
             * Return to care  
             * leave appointment as open and follow up later with the  client.
             *                                                             */
 
-          /*
-           * Returned to care , close the past active appointment
-           *   and book a new future appointment for the  client
-           */
-          Appointment.update(
-            {
-              active_app: "0",
-              appointment_kept: "Yes",
-              fnl_trcing_outocme: "5",
-              fnl_outcome_dte: call_date,
-              date_attended: today
-            },
-            { returning: true, where: { id: appointment_details.id } }
-          )
-            .then((updated, appointment) => {
-              let create_appointment = Appointment.create({
-                app_status: "Booked",
-                appntmnt_date: app_date,
-                status: "Active",
-                sent_status: "Sent",
-                client_id: client.id,
-                created_at: today,
-                created_by: user.id,
-                app_type_1: new_appointment_type,
-                entry_point: "Mobile",
-                visit_type: "Scheduled",
-                active_app: "1"
-              });
-              if (create_appointment) {
+            /*
+             * Returned to care , close the past active appointment
+             *   and book a new future appointment for the  client
+             */
+            Appointment.update(
+              {
+                active_app: "0",
+                appointment_kept: "Yes",
+                fnl_trcing_outocme: "5",
+                fnl_outcome_dte: call_date,
+                date_attended: today
+              },
+              { returning: true, where: { id: appointment_details.id } }
+            )
+              .then((updated, appointment) => {
+                let create_appointment = Appointment.create({
+                  app_status: "Booked",
+                  appntmnt_date: app_date,
+                  status: "Active",
+                  sent_status: "Sent",
+                  client_id: client.id,
+                  created_at: today,
+                  created_by: user.id,
+                  app_type_1: new_appointment_type,
+                  entry_point: "Mobile",
+                  visit_type: "Scheduled",
+                  active_app: "1"
+                });
+
                 if (new_appointment_type == "6") {
-                  console.log("process other appointment type here");
+                  OtherAppointmentType.create({
+                    name: appointment_other,
+                    created_by: user.id,
+                    created_at: today,
+                    appointment_id: appointment_id
+                  });
                 }
-              } else {
-              }
-            })
-            .catch(e => {});
-        }
-        if (final_outcome == 3) {
-          /*
-           * Self Transfer
-           * leave appointment as cvlosed and self transfer the  client.
-           */
-          Appointment.update(
-            {
-              active_app: "0",
-              fnl_trcing_outocme: "6",
-              fnl_outcome_dte: today,
-              date_attended: today
-            },
-            { returning: true, where: { id: appointment_details.id } }
-          )
-            .then((updated, client) => {
-              return Client.update(
-                {
-                  status: "Self Transfer"
-                },
-                { returning: true, where: { id: client.id } }
-              )
-                .then((updated, appointment) => {})
-                .catch(e => {});
-            })
-            .catch(e => {});
-        }
-        if (final_outcome == 4) {
-          /*
+              })
+              .catch(e => {});
+          }
+          if (final_outcome == 3) {
+            /*
+             * Self Transfer
+             * leave appointment as cvlosed and self transfer the  client.
+             */
+            Appointment.update(
+              {
+                active_app: "0",
+                fnl_trcing_outocme: "6",
+                fnl_outcome_dte: today,
+                date_attended: today,
+                updated_by: user.id,
+                updated_at: today
+              },
+              { returning: true, where: { id: appointment_details.id } }
+            )
+              .then((updated, client) => {
+                return Client.update(
+                  {
+                    status: "Self Transfer",
+                    updated_by: user.id,
+                    updated_at: today
+                  },
+                  { returning: true, where: { id: client.id } }
+                )
+                  .then((updated, appointment) => {})
+                  .catch(e => {});
+              })
+              .catch(e => {});
+          }
+          if (final_outcome == 4) {
+            /*
 
           * Dead / Deceased
           * leave appointment as open and follow up later with the  client.
           *                                                                 */
 
-          Appointment.update(
-            {
-              active_app: "0",
-              fnl_trcing_outocme: "7",
-              fnl_outcome_dte: today,
-              date_attended: today
-            },
-            { returning: true, where: { id: appointment_details.id } }
-          )
-            .then((updated, client) => {
-              Client.update(
-                {
-                  status: "Deceased"
-                },
-                { returning: true, where: { id: client.id } }
-              )
-                .then((updated, appointment) => {})
-                .catch(e => {});
-            })
-            .catch(e => {});
-        }
-        if (final_outcome == 5) {
-          //Other final outcome , leave appointment as open and follow up later with the  client.
+            Appointment.update(
+              {
+                active_app: "0",
+                fnl_trcing_outocme: "7",
+                fnl_outcome_dte: today,
+                date_attended: today,
+                updated_by: user.id,
+                updated_at: today
+              },
+              { returning: true, where: { id: appointment_details.id } }
+            )
+              .then((updated, client) => {
+                Client.update(
+                  {
+                    status: "Deceased",
+                    updated_by: user.id,
+                    updated_at: today
+                  },
+                  { returning: true, where: { id: client.id } }
+                )
+                  .then((updated, appointment) => {})
+                  .catch(e => {});
+              })
+              .catch(e => {});
+          }
+          if (final_outcome == 5) {
+            //Other final outcome , leave appointment as open and follow up later with the  client.
 
-          console.log("process other final outcome here");
+            OtherFinalOutcome.create({
+              appointment_id: appointment_id,
+              client_outcome_id: client_outcome_id,
+              outcome: other_outcome,
+              created_by: user.id,
+              created_at: today
+            });
+          }
         }
         return Appointment.update(
           {
