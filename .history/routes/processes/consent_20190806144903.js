@@ -25,7 +25,6 @@ async function consentClient(message, user) {
     const client_phone_no = variables[4];
     preferred_time = preferred_time.substring(0, 2);
     let consented = moment(consent_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-    let today = moment(new Date()).format("YYYY-MM-DD");
     let client = await Client.findOne({ where: { clinic_number: ccc_number } });
     if (!client)
         return {
