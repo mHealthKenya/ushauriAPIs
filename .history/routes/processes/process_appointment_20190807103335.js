@@ -2,7 +2,6 @@ const { Client } = require("../../models/client");
 const moment = require("moment");
 const base64 = require("base64util");
 const { Appointment } = require("../../models/appointment");
-const { OtherAppointmentType } = require('../../models/other_appointment_types');
 
 async function processAppointment(message, user) {
     message = message.split("*");
@@ -71,7 +70,7 @@ async function processAppointment(message, user) {
 
             if (existing_appointments === 0) {
                 //new booking, no record of previous appointment
-                return Appointment.create({
+                let create_appointment = Appointment.create({
                     app_status: "Booked",
                     appntmnt_date: app_date,
                     status: "Active",
@@ -83,36 +82,27 @@ async function processAppointment(message, user) {
                     entry_point: "Mobile",
                     visit_type: "Scheduled",
                     active_app: "1"
-                }).then((new_app) => {
+                });
+                if (create_appointment) {
+
                     if (appointment_type == "6") {
-                        return OtherAppointmentType.create({
+                        OtherAppointmentType.create({
                             name: appointment_other,
                             created_by: user.id,
                             created_at: today,
-                            appointment_id: new_app.id
-                        }).then((other_app) => {
-                            return {
-                                code: 200,
-                                message: `Appointment for ${upn} on ${app_date} was created successfully`
-                            };
-                        }).catch(e => {
-                            return {
-                                code: 200,
-                                message: "An error occured, could not create other  Appointment type "
-                            };
-                        })
-
+                            appointment_id: create_appointment.id
+                        });
                     }
                     return {
                         code: 200,
                         message: `Appointment for ${upn} on ${app_date} was created successfully`
                     };
-                }).catch(e => {
+                } else {
                     return {
                         code: 500,
                         message: "An error occured, could not create Appointment"
                     };
-                })
+                }
             } else {
                 // appointment history exists
 
@@ -180,10 +170,11 @@ async function processAppointment(message, user) {
                                 returning: true,
                                 where: { id: active_appointment_details.id }
                             })
-                            .then(([updated, old_app]) => {
+                            .then(([old_app, updated]) => {
                                 if (updated) {
                                     //create new appointment
-                                    return Appointment.create({
+
+                                    let create_appointment = Appointment.create({
                                         app_status: "Booked",
                                         appntmnt_date: app_date,
                                         status: "Active",
@@ -195,36 +186,18 @@ async function processAppointment(message, user) {
                                         entry_point: "Mobile",
                                         visit_type: "Scheduled",
                                         active_app: "1"
-                                    }).then((new_app) => {
-                                        if (appointment_type == "6") {
-                                            return OtherAppointmentType.create({
-                                                name: appointment_other,
-                                                created_by: user.id,
-                                                created_at: today,
-                                                appointment_id: new_app.id
-                                            }).then((other_app) => {
-                                                return {
-                                                    code: 200,
-                                                    message: `Appointment for ${upn} on ${app_date} was created successfully`
-                                                };
-                                            }).catch(e => {
-                                                return {
-                                                    code: 200,
-                                                    message: "An error occured, could not create other  Appointment type "
-                                                };
-                                            })
-
-                                        }
+                                    });
+                                    if (create_appointment) {
                                         return {
                                             code: 200,
-                                            message: `Appointment for ${upn} on ${app_date} was created successfully`
+                                            message: `Appointment for ${upn} on ${app_date} was created successfully, existing appointment marked as Un-Scheduled`
                                         };
-                                    }).catch(e => {
+                                    } else {
                                         return {
                                             code: 500,
                                             message: "An error occured, could not create Appointment"
                                         };
-                                    })
+                                    }
                                 }
                             })
                             .catch(e => {
@@ -236,7 +209,7 @@ async function processAppointment(message, user) {
                     }
                 } else {
                     //no active appointment exits, create new appointemnt
-                    return Appointment.create({
+                    let create_appointment = Appointment.create({
                         app_status: "Booked",
                         appntmnt_date: app_date,
                         status: "Active",
@@ -248,36 +221,18 @@ async function processAppointment(message, user) {
                         entry_point: "Mobile",
                         visit_type: "Scheduled",
                         active_app: "1"
-                    }).then((new_app) => {
-                        if (appointment_type == "6") {
-                            return OtherAppointmentType.create({
-                                name: appointment_other,
-                                created_by: user.id,
-                                created_at: today,
-                                appointment_id: new_app.id
-                            }).then((other_app) => {
-                                return {
-                                    code: 200,
-                                    message: `Appointment for ${upn} on ${app_date} was created successfully`
-                                };
-                            }).catch(e => {
-                                return {
-                                    code: 200,
-                                    message: "An error occured, could not create other  Appointment type "
-                                };
-                            })
-
-                        }
+                    });
+                    if (create_appointment) {
                         return {
                             code: 200,
                             message: `Appointment for ${upn} on ${app_date} was created successfully`
                         };
-                    }).catch(e => {
+                    } else {
                         return {
                             code: 500,
                             message: "An error occured, could not create Appointment"
                         };
-                    })
+                    }
                 }
             }
         } else {
@@ -308,6 +263,7 @@ async function processAppointment(message, user) {
                 });
 
                 if (active_appointment_on_same_date === 0) {
+                    console.log('in updating old app');
                     return Appointment.update({
                             appointment_kept: "Yes",
                             date_attended: today,
@@ -319,54 +275,57 @@ async function processAppointment(message, user) {
                         }, { returning: true, where: { id: old_appointment_id } })
                         .then(([updated, old_app]) => {
 
-
-                            if (updated) {
-                                //create new appointment
-                                return Appointment.create({
-                                    app_status: "Booked",
-                                    appntmnt_date: app_date,
-                                    status: "Active",
-                                    sent_status: "Sent",
-                                    client_id: client.id,
-                                    created_at: today,
-                                    created_by: user.id,
-                                    app_type_1: appointment_type,
-                                    entry_point: "Mobile",
-                                    visit_type: "Scheduled",
-                                    active_app: "1"
-                                }).then((new_app) => {
-                                    if (appointment_type == "6") {
-                                        return OtherAppointmentType.create({
-                                            name: appointment_other,
-                                            created_by: user.id,
-                                            created_at: today,
-                                            appointment_id: new_app.id
-                                        }).then((other_app) => {
-                                            return {
-                                                code: 200,
-                                                message: `Appointment for ${upn} on ${app_date} was created successfully`
-                                            };
-                                        }).catch(e => {
-                                            return {
-                                                code: 200,
-                                                message: "An error occured, could not create other  Appointment type "
-                                            };
-                                        })
-
-                                    }
-                                    return {
-                                        code: 200,
-                                        message: `Appointment for ${upn} on ${app_date} was created successfully`
-                                    };
-                                }).catch(e => {
-                                    return {
-                                        code: 500,
-                                        message: "An error occured, could not create Appointment"
-                                    };
-                                })
-
-
+                            return {
+                                code: 200,
+                                message: old_app
                             }
+                            // if (updated) {
+                            //     //create new appointment
+                            //     console.log("in creating new app");
+
+
+                            //     let create_appointment = await Appointment.create({
+                            //         app_status: "Booked",
+                            //         appntmnt_date: app_date,
+                            //         status: "Active",
+                            //         sent_status: "Sent",
+                            //         client_id: client.id,
+                            //         created_at: today,
+                            //         created_by: user.id,
+                            //         app_type_1: appointment_type,
+                            //         entry_point: "Mobile",
+                            //         visit_type: "Scheduled",
+                            //         active_app: "1"
+                            //     });
+                            //     if (create_appointment) {
+                            //         console.log(create_appointment)
+                            //         if (appointment_type == "6") {
+                            //             let awaitOther = await OtherAppointmentType.create({
+                            //                 name: appointment_other,
+                            //                 created_by: user.id,
+                            //                 created_at: today,
+                            //                 appointment_id: create_appointment.id
+                            //             });
+
+                            //             if (awaitOther) {
+                            //                 return {
+                            //                     code: 200,
+                            //                     message: `Appointment for ${upn} on ${app_date} was created successfully`
+                            //                 };
+                            //             }
+                            //         }
+                            //         return {
+                            //             code: 200,
+                            //             message: `Appointment for ${upn} on ${app_date} was created successfully`
+                            //         };
+
+                            //     } else {
+                            //         return {
+                            //             code: 500,
+                            //             message: "An error occured, could not create Appointment"
+                            //         };
+                            //     }
+                            // }
                         })
                         .catch(e => {
                             return {

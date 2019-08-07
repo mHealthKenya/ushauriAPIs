@@ -98,7 +98,7 @@ async function processAppointment(message, user) {
                         }).catch(e => {
                             return {
                                 code: 200,
-                                message: "An error occured, could not create other  Appointment type "
+                                message: e
                             };
                         })
 
@@ -210,7 +210,7 @@ async function processAppointment(message, user) {
                                             }).catch(e => {
                                                 return {
                                                     code: 200,
-                                                    message: "An error occured, could not create other  Appointment type "
+                                                    message: e
                                                 };
                                             })
 
@@ -263,7 +263,7 @@ async function processAppointment(message, user) {
                             }).catch(e => {
                                 return {
                                     code: 200,
-                                    message: "An error occured, could not create other  Appointment type "
+                                    message: e
                                 };
                             })
 
@@ -349,7 +349,7 @@ async function processAppointment(message, user) {
                                         }).catch(e => {
                                             return {
                                                 code: 200,
-                                                message: "An error occured, could not create other  Appointment type "
+                                                message: e
                                             };
                                         })
 
