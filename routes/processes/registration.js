@@ -13,7 +13,7 @@ async function registerClient(message, user) {
   let decoded_message = await base64.decode(message[0]);
 
   // check if it is a valid base 64 encode
-  if (!(base64.encode(decoded_message).trim() === message[0].trim()))
+  if (!(base64.encode(decoded_message).trim() == message[0].trim()))
     return {
       code: 400,
       message: "Your application needs to be updated to use this feature"
@@ -22,7 +22,7 @@ async function registerClient(message, user) {
   decoded_message = "Reg*" + decoded_message;
 
   const variables = decoded_message.split("*");
-
+  console.log(variables.length);
   if (variables.length != 23)
     return {
       code: 400,
