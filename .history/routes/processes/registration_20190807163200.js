@@ -109,7 +109,7 @@ async function registerClient(message, user) {
     let motivational_enable;
     if (parseInt(motivation_enable) == 1) {
         motivational_enable = "Yes";
-    } else if (parseInt(motivation_enable) == 2) {
+    } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
         motivational_enable = "No";
     }
 
@@ -124,20 +124,6 @@ async function registerClient(message, user) {
                 code: 400,
                 message: `Client: ${upn} already exists in the system`
             };
-
-        let consented = moment(new Date()).format("YYYY-MM-DD");
-        if (parseInt(sms_enable) == 1) {
-            sms_enable = "Yes";
-        } else if (parseInt(sms_enable) == 2 || (sms_enable === "-1")) {
-            sms_enable = "No";
-        }
-
-        let motivational_enable;
-        if (parseInt(motivation_enable) == 1) {
-            motivational_enable = "Yes";
-        } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
-            motivational_enable = "No";
-        }
 
         //save the client details
         return Client.findOrCreate({
@@ -240,13 +226,13 @@ async function registerClient(message, user) {
             language_id: language,
             smsenable: sms_enable,
             partner_id: partner_id,
-            status: client_status, //status
+            status: client_status,
             art_date: art_start_date,
             updated_by: user_id,
             updated_at: b,
             txt_time: messaging_time,
-            motivational_enable: motivational_enable,
-            wellness_enable: motivational_enable,
+            motivational_enable: motivation_enable,
+            wellness_enable: motivation_enable,
             national_id: national_id,
             file_no: serial_no
         };

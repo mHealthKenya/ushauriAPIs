@@ -90,7 +90,7 @@ async function registerClient(message, user) {
     let consented = moment(new Date()).format("YYYY-MM-DD");
     if (parseInt(sms_enable) == 1) {
         sms_enable = "Yes";
-    } else if (parseInt(sms_enable) == 2) {
+    } else if (parseInt(sms_enable) == 2 || (sms_enable === "-1")) {
         sms_enable = "No";
     }
     if (parseInt(condition) == 1) {
@@ -109,7 +109,7 @@ async function registerClient(message, user) {
     let motivational_enable;
     if (parseInt(motivation_enable) == 1) {
         motivational_enable = "Yes";
-    } else if (parseInt(motivation_enable) == 2) {
+    } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
         motivational_enable = "No";
     }
 
@@ -124,20 +124,6 @@ async function registerClient(message, user) {
                 code: 400,
                 message: `Client: ${upn} already exists in the system`
             };
-
-        let consented = moment(new Date()).format("YYYY-MM-DD");
-        if (parseInt(sms_enable) == 1) {
-            sms_enable = "Yes";
-        } else if (parseInt(sms_enable) == 2 || (sms_enable === "-1")) {
-            sms_enable = "No";
-        }
-
-        let motivational_enable;
-        if (parseInt(motivation_enable) == 1) {
-            motivational_enable = "Yes";
-        } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
-            motivational_enable = "No";
-        }
 
         //save the client details
         return Client.findOrCreate({
