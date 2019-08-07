@@ -2,7 +2,6 @@ const { PastAppointments } = require("../../models/past_appointment");
 const express = require("express");
 const router = express.Router();
 const { User } = require("../../models/user");
-const base64 = require("base64util");
 
 router.post("/", async(req, res) => {
     let phone_no = req.body.phone_no;
