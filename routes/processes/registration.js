@@ -23,7 +23,7 @@ async function registerClient(message, user) {
 
   const variables = decoded_message.split("*");
   console.log(variables.length);
-  if (variables.length != 23)
+  if (variables.length < 23)
     return {
       code: 400,
       message: "Your application needs to be updated to use this feature"
