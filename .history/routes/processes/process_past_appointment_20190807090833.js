@@ -1,8 +1,6 @@
-const { TodayAppointments } = require("../../models/todays_appointment");
+const { PastAppointments } = require("../../models/past_appointment");
 const express = require("express");
 const router = express.Router();
-const base64 = require("base64util");
-
 const { User } = require("../../models/user");
 
 router.post("/", async(req, res) => {
@@ -11,16 +9,15 @@ router.post("/", async(req, res) => {
     let user = await User.findOne({ where: { phone_no: phone_no } });
     if (!user) res.status(400).send(`Phone Number: ${phone_no} is not registered in the system`);
 
-    let appointments = await TodayAppointments.findAll({
+    let appointments = await PastAppointments.findAll({
         where: {
             user_phone_no: phone_no
         }
     });
 
-    if (!appointments) res.status(400).send(`You do not have any today's appointments`);
+    if (!appointments) res.status(400).send(`You do not have any past appointments`);
     let message = new Array();
     for (let i = 0; i < appointments.length; i++) {
-
         let facility_id = appointments[i].facility_id;
         let user_phone_no = appointments[i].user_phone_no;
         let mfl_code = appointments[i].facility_id;
@@ -35,8 +32,6 @@ router.post("/", async(req, res) => {
         let file_no = appointments[i].file_no;
         let buddy_phone_no = appointments[i].buddy_phone_no;
         appointments[i].trmnt_buddy_phone_no = '';
-        console.log(CCC);
-
         if (appointments[i].buddy_phone_no == "") {
             appointments[i].trmnt_buddy_phone_no = '-1';
         } else {
@@ -73,7 +68,6 @@ router.post("/", async(req, res) => {
         } else {
             appointments[i].appointment_id = appointments[i].appointment_id;
         }
-
         let outgoing_msg = CCC + "*" + client_name +
             "*" + client_phone_no +
             "*" + appointment_type +
@@ -87,8 +81,10 @@ router.post("/", async(req, res) => {
         message.push(innerMessage);
 
     }
+
+
     let result = {};
-    result.result = message;
+    result.result = appointments;
     res.status(200).send(result);
 
 
