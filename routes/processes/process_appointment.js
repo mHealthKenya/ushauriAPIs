@@ -253,7 +253,7 @@ async function processAppointment(message, user) {
       let active_appointment_date = moment(
         current_active_appointment.appntmnt_date
       );
-      let current_date = new Date();
+      let current_date = moment(new Date().toDateString());
       let diffDays = current_date.diff(active_appointment_date, "days");
       if (diffDays === 0) {
         //mark active appointment as kept
