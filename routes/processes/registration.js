@@ -199,7 +199,7 @@ async function registerClient(message, user) {
       .catch(e => {
         return {
           code: 500,
-          message: `Error. Client ${upn} could not be created`
+          message: e.message
         };
       });
   } else if (transaction_type == 2) {
@@ -251,7 +251,7 @@ async function registerClient(message, user) {
         }
       })
       .catch(e => {
-        return { code: 500, message: `Could not update client ${upn}` };
+        return { code: 500, message: e.message };
       });
   } else {
     return {
