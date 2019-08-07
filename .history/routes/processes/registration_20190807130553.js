@@ -204,6 +204,7 @@ async function registerClient(message, user) {
             });
     } else if (transaction_type == 2) {
         let update_array = {
+            mfl_code: mfl_code,
             f_name: f_name,
             m_name: m_name,
             l_name: l_name,
@@ -212,6 +213,7 @@ async function registerClient(message, user) {
             marital: marital,
             client_status: condition,
             enrollment_date: enrollment_date,
+            group_id: group_id,
             phone_no: primary_phone_no,
             alt_phone_no: alt_phone_no,
             buddy_phone_no: trtmnt_buddy_phone_no,
@@ -220,13 +222,16 @@ async function registerClient(message, user) {
             partner_id: partner_id,
             status: client_status,
             art_date: art_start_date,
-            updated_by: user_id,
-            updated_at: b,
+            created_at: b,
+            entry_point: "Mobile",
+            created_by: user_id,
+            client_type: "New",
             txt_time: messaging_time,
             motivational_enable: motivation_enable,
             wellness_enable: motivation_enable,
             national_id: national_id,
-            file_no: serial_no
+            file_no: serial_no,
+            clinic_id: clinic_id
         };
 
 
@@ -234,20 +239,26 @@ async function registerClient(message, user) {
 
 
         //save the client details
-        return Client.update(clean_object, { where: { clinic_number: upn }, returning: true })
+        return Client.update({
+                clean_object
+            }, { where: { clinic_number: upn }, returning: true })
             .then(([updated, client]) => {
 
-                if (updated) {
-                    return {
-                        code: 200,
-                        message: `Client ${upn} was updated successfully`
-                    };
-                } else {
-                    return {
-                        code: 400,
-                        message: `Could not update client ${upn}`
-                    };
+                return {
+                    code: 200,
+                    message: client
                 }
+                // if (updated) {
+                //     return {
+                //         code: 200,
+                //         message: `Client ${upn} was updated successfully`
+                //     };
+                // } else {
+                //     return {
+                //         code: 400,
+                //         message: `Could not update client ${upn}`
+                //     };
+                // }
             })
             .catch(e => {
                 return { code: 500, message: e.message };

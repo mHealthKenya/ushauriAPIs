@@ -221,12 +221,13 @@ async function registerClient(message, user) {
             status: client_status,
             art_date: art_start_date,
             updated_by: user_id,
-            updated_at: b,
+            updated_at: today,
             txt_time: messaging_time,
             motivational_enable: motivation_enable,
             wellness_enable: motivation_enable,
             national_id: national_id,
-            file_no: serial_no
+            file_no: serial_no,
+            clinic_id: clinic_id
         };
 
 
@@ -234,20 +235,26 @@ async function registerClient(message, user) {
 
 
         //save the client details
-        return Client.update(clean_object, { where: { clinic_number: upn }, returning: true })
+        return Client.update({
+                clean_object
+            }, { where: { clinic_number: upn }, returning: true })
             .then(([updated, client]) => {
 
-                if (updated) {
-                    return {
-                        code: 200,
-                        message: `Client ${upn} was updated successfully`
-                    };
-                } else {
-                    return {
-                        code: 400,
-                        message: `Could not update client ${upn}`
-                    };
+                return {
+                    code: 200,
+                    message: client
                 }
+                // if (updated) {
+                //     return {
+                //         code: 200,
+                //         message: `Client ${upn} was updated successfully`
+                //     };
+                // } else {
+                //     return {
+                //         code: 400,
+                //         message: `Could not update client ${upn}`
+                //     };
+                // }
             })
             .catch(e => {
                 return { code: 500, message: e.message };

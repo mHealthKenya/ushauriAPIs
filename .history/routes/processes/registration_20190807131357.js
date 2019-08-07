@@ -234,20 +234,26 @@ async function registerClient(message, user) {
 
 
         //save the client details
-        return Client.update(clean_object, { where: { clinic_number: upn }, returning: true })
+        return Client.update({
+                f_name: 'ozil'
+            }, { where: { clinic_number: upn }, returning: true })
             .then(([updated, client]) => {
 
-                if (updated) {
-                    return {
-                        code: 200,
-                        message: `Client ${upn} was updated successfully`
-                    };
-                } else {
-                    return {
-                        code: 400,
-                        message: `Could not update client ${upn}`
-                    };
+                return {
+                    code: 200,
+                    message: client
                 }
+                // if (updated) {
+                //     return {
+                //         code: 200,
+                //         message: `Client ${upn} was updated successfully`
+                //     };
+                // } else {
+                //     return {
+                //         code: 400,
+                //         message: `Could not update client ${upn}`
+                //     };
+                // }
             })
             .catch(e => {
                 return { code: 500, message: e.message };
