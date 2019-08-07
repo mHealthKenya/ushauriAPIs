@@ -17,10 +17,10 @@ async function registerClient(message, user) {
 
     const variables = decoded_message.split("*");
     console.log(variables.length);
-    if (variables.length != 23)
+    if (variables.length != 22)
         return {
             code: 400,
-            message: variables.length
+            message: "Your application needs to be updated to use this feature"
         };
 
     const reg = variables[0]; //CODE = REG : REGISTRATION 1
@@ -161,21 +161,20 @@ async function registerClient(message, user) {
                         //here we loop through an object
                         var new_message;
                         Object.values(message).forEach(value => {
-                            let phone;
                             new_message = value.message;
                             if (value.logic_flow == 1) {
                                 new_message = new_message.replace("XXX", f_name);
                             }
                             if (primary_phone_no != null) {
-                                phone = primary_phone_no;
+                                let phone = primary_phone_no;
                             } else if (primary_phone_no == null && alt_phone_no != null) {
-                                phone = alt_phone_no;
+                                let phone = alt_phone_no;
                             } else if (
                                 primary_phone_no == null &&
                                 alt_phone_no == null &&
                                 buddy_phone_no != null
                             ) {
-                                phone = buddy_phone_no;
+                                let phone = buddy_phone_no;
                             }
                             Sender(phone, new_message);
                         });
