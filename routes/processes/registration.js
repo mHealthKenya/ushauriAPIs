@@ -203,38 +203,41 @@ async function registerClient(message, user) {
         };
       });
   } else if (transaction_type == 2) {
+    let update_array = {
+      mfl_code: mfl_code,
+      f_name: f_name,
+      m_name: m_name,
+      l_name: l_name,
+      dob: dob,
+      gender: gender,
+      marital: marital,
+      client_status: condition,
+      enrollment_date: enrollment_date,
+      group_id: group_id,
+      phone_no: primary_phone_no,
+      alt_phone_no: alt_phone_no,
+      buddy_phone_no: trtmnt_buddy_phone_no,
+      language_id: language,
+      smsenable: sms_enable,
+      partner_id: partner_id,
+      status: client_status,
+      art_date: art_start_date,
+      created_at: b,
+      entry_point: "Mobile",
+      created_by: user_id,
+      client_type: "New",
+      txt_time: messaging_time,
+      motivational_enable: motivation_enable,
+      wellness_enable: motivation_enable,
+      national_id: national_id,
+      file_no: serial_no,
+      clinic_id: clinic_id
+    };
+
+    let clean_object = await cleanUpdateObject(update_array);
     //save the client details
     return Client.update(
-      {
-        mfl_code: mfl_code,
-        f_name: f_name,
-        m_name: m_name,
-        l_name: l_name,
-        dob: dob,
-        gender: gender,
-        marital: marital,
-        client_status: condition,
-        enrollment_date: enrollment_date,
-        group_id: group_id,
-        phone_no: primary_phone_no,
-        alt_phone_no: alt_phone_no,
-        buddy_phone_no: trtmnt_buddy_phone_no,
-        language_id: language,
-        smsenable: sms_enable,
-        partner_id: partner_id,
-        status: client_status,
-        art_date: art_start_date,
-        created_at: b,
-        entry_point: "MOB",
-        created_by: user_id,
-        client_type: "New",
-        txt_time: messaging_time,
-        motivational_enable: motivation_enable,
-        wellness_enable: motivation_enable,
-        national_id: national_id,
-        file_no: serial_no,
-        clinic_id: clinic_id
-      },
+      { clean_object },
       { returning: true, where: { clinic_number: upn } }
     )
       .then(([client, updated]) => {
@@ -259,6 +262,24 @@ async function registerClient(message, user) {
       message: "Not a valid transaction type"
     };
   }
+}
+
+function cleanUpdateObject(obj) {
+  let new_key_array = new Array();
+
+  const value_array = Object.values(obj);
+  const key_array = Object.keys(obj);
+
+  for (let i = 0; i < value_array.length; i++) {
+    if (value_array[i] == "-1") {
+      new_key_array.push(key_array[i]);
+    }
+  }
+
+  for (let j = 0; j < new_key_array.length; j++) {
+    delete obj[new_key_array[j]];
+  }
+  return obj;
 }
 
 module.exports = registerClient;

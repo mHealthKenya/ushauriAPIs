@@ -10,6 +10,7 @@ const app_diary = require("./routes/appointment_diary");
 const verify = require("./routes/processes/verify_mflcode");
 const todaysAppointments = require("./routes/processes/process_today_appointment");
 const pastAppointments = require("./routes/processes/process_past_appointment");
+const deletObject = require("./routes/delete_object_values");
 
 // app.use(express.json());
 app.use(bodyParser.json());
@@ -20,8 +21,9 @@ app.use("/receiver", app_diary);
 app.use("/verifyMFLCode", verify);
 app.use("/today_appointments", todaysAppointments);
 app.use("/past_appointments", pastAppointments);
+app.use("/delete_object_values", deletObject);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
-    console.log(`Ushauri Web App started. Listening on Port: ${PORT}`)
-)
+  console.log(`Ushauri Web App started. Listening on Port: ${PORT}`)
+);
