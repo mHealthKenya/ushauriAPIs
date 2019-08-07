@@ -153,8 +153,8 @@ async function registerClient(message, user) {
                     created_by: user_id,
                     client_type: "New",
                     txt_time: messaging_time,
-                    motivational_enable: motivational_enable,
-                    wellness_enable: motivational_enable,
+                    motivational_enable: motivation_enable,
+                    wellness_enable: motivation_enable,
                     national_id: national_id,
                     file_no: serial_no,
                     clinic_id: clinic_id

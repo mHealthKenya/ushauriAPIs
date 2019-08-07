@@ -65,7 +65,7 @@ async function registerClient(message, user) {
             code: 400,
             message: "Date of Birth cannot be greater than Art Start date"
         };
-    if (Date.parse(enrollment_date) > Date.parse(art_start_date))
+    if (Date.parse(art_start_date) > Date.parse(enrollment_date))
         return {
             code: 400,
             message: "Enrollment Date cannot be greater than Art start date"
