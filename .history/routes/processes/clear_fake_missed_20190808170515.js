@@ -123,7 +123,9 @@ async function clearFakeAppointment(message, user) {
                         if (create_appointment) {
                             return {
                                 code: 200,
-                                message: `Appointment for ${upn} on ${next_tca} was created successfully`
+                                message: `Appointment for ${
+                  client.clinic_number
+                } on ${next_tca} was created successfully`
                             };
                         } else {
                             return {
@@ -193,6 +195,11 @@ async function clearFakeAppointment(message, user) {
                                     created_by: user.id,
                                     created_at: today,
                                     appointment_id: new_app.id
+                                }).then((other_app) => {
+                                    return {
+                                        code: 200,
+                                        message: `Appointment for ${Client.clinic_number} on ${next_tca} was created successfully`
+                                    };
                                 }).catch(e => {
                                     return {
                                         code: 200,
