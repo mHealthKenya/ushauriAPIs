@@ -141,7 +141,7 @@ async function clearFakeAppointment(message, user) {
                             }
                             return {
                                 code: 200,
-                                message: `Appointment for ${Client.clinic_number} on ${next_tca} was created successfully`
+                                message: `Appointment for ${upn} on ${app_date} was created successfully`
                             };
                         });
                         if (create_appointment) {
@@ -234,7 +234,7 @@ async function clearFakeAppointment(message, user) {
                             }
                             return {
                                 code: 200,
-                                message: `Appointment for ${Client.clinic_number} on ${next_tca} was created successfully`
+                                message: `Appointment for ${upn} on ${app_date} was created successfully`
                             };
                         });
 
