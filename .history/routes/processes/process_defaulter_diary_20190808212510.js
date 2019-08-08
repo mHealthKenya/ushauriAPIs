@@ -23,7 +23,7 @@ async function processDefaulterDiary(message, user) {
             message: "Your application needs to be updated to use this feature"
         };
 
-    decoded_message = "MSDC*" + decoded_message;
+    decoded_message = "MSD*" + decoded_message;
 
     const variables = decoded_message.split("*");
 
