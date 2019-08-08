@@ -14,24 +14,24 @@ async function processDefaulterDiary(message, user) {
 
     message = message.split("#");
 
-    let decoded_message = await base64.decode(message[0].trim());
-
-    //IF SOMETHING HAPPENS PLEASE UNCOMMENT AND DEBUG
-
+    let decoded_message = await base64.decode(message[0]);
 
     // check if it is a valid base 64 encode
-    // if (!(base64.encode(decoded_message).trim() === message[0].trim()))
+    if (!(base64.encode(decoded_message).trim() === message[0]))
     // return {
     //     code: 400,
     //     message: "Your application needs to be updated to use this feature1"
     // };
-
+        return {
+        code: 200,
+        message: message[0]
+    };
 
     decoded_message = "MSDC*" + decoded_message;
 
     const variables = decoded_message.split("*");
 
-    if (variables.length != 14)
+    if (variables.length != 13)
         return {
             code: 400,
             message: "Your application needs to be updated to use this feature"

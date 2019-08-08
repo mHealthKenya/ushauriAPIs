@@ -9,10 +9,9 @@ const OtherFinalOutcome = sequelize.sequelize.define(
             autoIncrement: true
         },
         outcome: Sequelize.STRING,
+        appointment_id: Sequelize.INTEGER,
         created_by: Sequelize.INTEGER,
-        updated_by: Sequelize.INTEGER,
-        client_outcome_id: Sequelize.INTEGER,
-        appointment_id: Sequelize.INTEGER
+        updated_by: Sequelize.INTEGER
     }, {
         timestamps: true,
         paranoid: true,

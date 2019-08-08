@@ -17,8 +17,6 @@ async function processDefaulterDiary(message, user) {
     let decoded_message = await base64.decode(message[0].trim());
 
     //IF SOMETHING HAPPENS PLEASE UNCOMMENT AND DEBUG
-
-
     // check if it is a valid base 64 encode
     // if (!(base64.encode(decoded_message).trim() === message[0].trim()))
     // return {

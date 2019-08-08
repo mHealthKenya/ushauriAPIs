@@ -263,7 +263,7 @@ async function processDefaulterDiary(message, user) {
 
                         OtherFinalOutcome.create({
                             appointment_id: appointment_id,
-                            client_outcome_id: client_outcome_id,
+                            client_outcome_id: client.id,
                             outcome: other_outcome,
                             created_by: user.id,
                             created_at: today
