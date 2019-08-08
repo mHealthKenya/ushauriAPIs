@@ -112,12 +112,6 @@ async function registerClient(message, user) {
     } else if (parseInt(motivation_enable) == 2) {
         motivational_enable = "No";
     }
-    let client_type;
-    if (transaction_type == 3) {
-        client_type = "Transfer";
-    } else if (transaction_type == 1) {
-        client_type = "New"
-    }
 
 
 
@@ -144,7 +138,12 @@ async function registerClient(message, user) {
         } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
             motivational_enable = "No";
         }
-
+        let client_type;
+        if (transaction_type == 3) {
+            client_type = "Transfer";
+        } else if (transaction_type == 1) {
+            client_type = "New"
+        }
 
         //save the client details
         return Client.findOrCreate({

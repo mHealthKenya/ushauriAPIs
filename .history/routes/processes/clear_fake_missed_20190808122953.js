@@ -3,7 +3,6 @@ const moment = require("moment");
 const base64 = require("base64util");
 const { Appointment } = require("../../models/appointment");
 const { clientOutcome } = require("../../models/client_outcome");
-const { OtherAppointmentType } = require('../../models/other_appointment_types');
 
 async function clearFakeAppointment(message, user) {
     message = message.split("*");

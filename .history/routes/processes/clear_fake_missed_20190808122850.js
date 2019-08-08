@@ -3,7 +3,6 @@ const moment = require("moment");
 const base64 = require("base64util");
 const { Appointment } = require("../../models/appointment");
 const { clientOutcome } = require("../../models/client_outcome");
-const { OtherAppointmentType } = require('../../models/other_appointment_types');
 
 async function clearFakeAppointment(message, user) {
     message = message.split("*");
@@ -212,30 +211,6 @@ async function clearFakeAppointment(message, user) {
                             entry_point: "Mobile",
                             visit_type: "Scheduled",
                             active_app: "1"
-                        }).then((new_app) => {
-                            if (new_appointment_type == "6") {
-                                return OtherAppointmentType.create({
-                                    name: appointment_other,
-                                    created_by: user.id,
-                                    created_at: today,
-                                    appointment_id: new_app.id
-                                }).then((other_app) => {
-                                    return {
-                                        code: 200,
-                                        message: `Appointment for ${Client.clinic_number} on ${next_tca} was created successfully`
-                                    };
-                                }).catch(e => {
-                                    return {
-                                        code: 200,
-                                        message: "An error occured, could not create other  Appointment type "
-                                    };
-                                })
-
-                            }
-                            return {
-                                code: 200,
-                                message: `Appointment for ${upn} on ${app_date} was created successfully`
-                            };
                         });
 
                         if (create_appointment) {

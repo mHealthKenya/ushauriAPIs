@@ -112,12 +112,6 @@ async function registerClient(message, user) {
     } else if (parseInt(motivation_enable) == 2) {
         motivational_enable = "No";
     }
-    let client_type;
-    if (transaction_type == 3) {
-        client_type = "Transfer";
-    } else if (transaction_type == 1) {
-        client_type = "New"
-    }
 
 
 
@@ -145,7 +139,6 @@ async function registerClient(message, user) {
             motivational_enable = "No";
         }
 
-
         //save the client details
         return Client.findOrCreate({
                 where: { clinic_number: upn },
@@ -172,7 +165,7 @@ async function registerClient(message, user) {
                     created_at: b,
                     entry_point: "Mobile",
                     created_by: user_id,
-                    client_type: client_type,
+                    client_type: "New",
                     txt_time: messaging_time,
                     motivational_enable: motivational_enable,
                     wellness_enable: motivational_enable,
@@ -247,7 +240,7 @@ async function registerClient(message, user) {
             language_id: language,
             smsenable: sms_enable,
             partner_id: partner_id,
-            status: status,
+            status: client_status,
             art_date: art_start_date,
             updated_by: user_id,
             updated_at: b,
