@@ -127,14 +127,14 @@ async function registerClient(message, user) {
         client_type = "New"
     }
 
-    if (art_start_date == "-1") {
+    if (Date.parse(art_start_date) == "-1") {
         art_start_date = null;
+        console.log(art_start_date);
     }
 
 
 
     if (transaction_type == 1 || transaction_type == 3) {
-
         //New Registration or Transfer IN for a client not existing in the system
 
         const client = await Client.findOne({ where: { clinic_number: upn } });

@@ -56,6 +56,8 @@ async function registerClient(message, user) {
     const partner_id = user.partner_id;
     const user_id = user.id;
 
+    console.log(art_start_date);
+
     if (!upn) return { code: 400, message: "Clinic Number not provided" };
     if (!f_name) return { code: 400, message: "First Name not provided" };
     if (!l_name) return { code: 400, message: "Last Name not provided" };
@@ -127,14 +129,13 @@ async function registerClient(message, user) {
         client_type = "New"
     }
 
-    if (art_start_date == "-1") {
-        art_start_date = null;
+    if (Date.parse(art_start_date) == "-1") {
+        Date.parse(art_start_date) = null;
     }
 
 
 
     if (transaction_type == 1 || transaction_type == 3) {
-
         //New Registration or Transfer IN for a client not existing in the system
 
         const client = await Client.findOne({ where: { clinic_number: upn } });
@@ -195,6 +196,7 @@ async function registerClient(message, user) {
             })
             .then(async([client, created]) => {
                 if (created) {
+                    // console.log(art_start_date);
 
                     if (sms_enable == "Yes" && language != "-1") {
                         // let sender = Sender

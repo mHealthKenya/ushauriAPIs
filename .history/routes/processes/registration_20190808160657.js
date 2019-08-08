@@ -129,6 +129,7 @@ async function registerClient(message, user) {
 
     if (art_start_date == "-1") {
         art_start_date = null;
+        console.log(art_start_date);
     }
 
 

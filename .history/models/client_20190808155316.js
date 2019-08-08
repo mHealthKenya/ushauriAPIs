@@ -37,12 +37,7 @@ const Client = sequelize.sequelize.define(
         marital: Sequelize.NUMBER,
         smsenable: Sequelize.ENUM("Yes", "No"),
         enrollment_date: Sequelize.DATEONLY,
-        art_date: {
-            type: Sequelize.DATEONLY,
-            defaultValue: null,
-            allowNull: true
-
-        },
+        art_date: Sequelize.DATEONLY,
         wellness_enable: Sequelize.ENUM("Yes", "No"),
         motivational_enable: Sequelize.ENUM("Yes", "No"),
         client_type: Sequelize.ENUM("New", "Transfer"),

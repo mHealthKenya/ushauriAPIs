@@ -39,8 +39,7 @@ const Client = sequelize.sequelize.define(
         enrollment_date: Sequelize.DATEONLY,
         art_date: {
             type: Sequelize.DATEONLY,
-            defaultValue: null,
-            allowNull: true
+            defaultValue: null
 
         },
         wellness_enable: Sequelize.ENUM("Yes", "No"),

@@ -14,11 +14,6 @@ async function registerClient(message, user) {
 
     decoded_message = "Reg*" + decoded_message;
 
-    // return {
-    //     code: 200,
-    //     message: decoded_message
-    // }
-
     const variables = decoded_message.split("*");
     console.log(variables.length);
     if (variables.length != 23)
@@ -77,10 +72,7 @@ async function registerClient(message, user) {
         };
     dob = moment(dob, "DD/MM/YYYY").format("YYYY-MM-DD");
     enrollment_date = moment(enrollment_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-
-    if (art_start_date != "-1") {
-        art_start_date = moment(art_start_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-    }
+    art_start_date = moment(art_start_date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
     var b = moment(new Date());
     var diffDays = b.diff(dob, "days");
@@ -126,15 +118,13 @@ async function registerClient(message, user) {
     } else if (transaction_type == 1) {
         client_type = "New"
     }
-
-    if (art_start_date == "-1") {
+    if (art_start_date === "-1") {
         art_start_date = null;
     }
 
 
 
     if (transaction_type == 1 || transaction_type == 3) {
-
         //New Registration or Transfer IN for a client not existing in the system
 
         const client = await Client.findOne({ where: { clinic_number: upn } });
@@ -157,6 +147,9 @@ async function registerClient(message, user) {
         } else if (parseInt(motivation_enable) == 2 || (motivation_enable === "-1")) {
             motivational_enable = "No";
         }
+
+
+
 
         //save the client details
         return Client.findOrCreate({
@@ -195,6 +188,7 @@ async function registerClient(message, user) {
             })
             .then(async([client, created]) => {
                 if (created) {
+                    // console.log(art_start_date);
 
                     if (sms_enable == "Yes" && language != "-1") {
                         // let sender = Sender
