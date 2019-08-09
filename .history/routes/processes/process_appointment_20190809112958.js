@@ -205,7 +205,7 @@ async function processAppointment(message, user) {
                                             }).then((other_app) => {
                                                 return {
                                                     code: 200,
-                                                    message: `Appointment for ${client.f_name} UPN: ${upn} on ${app_date} was created successfully`
+                                                    message: `Appointment for ${upn} on ${app_date} was created successfully`
                                                 };
                                             }).catch(e => {
                                                 return {
@@ -217,7 +217,7 @@ async function processAppointment(message, user) {
                                         }
                                         return {
                                             code: 200,
-                                            message: `Appointment for ${client.f_name} UPN:  ${upn} on ${app_date} was created successfully`
+                                            message: `Appointment for ${client.f_name} :  ${upn} on ${app_date} was created successfully`
                                         };
                                     }).catch(e => {
                                         return {
@@ -258,7 +258,7 @@ async function processAppointment(message, user) {
                             }).then((other_app) => {
                                 return {
                                     code: 200,
-                                    message: `Appointment for ${client.f_name} UPN : ${upn} on ${app_date} was created successfully`
+                                    message: `Appointment for ${upn} on ${app_date} was created successfully`
                                 };
                             }).catch(e => {
                                 return {
@@ -270,7 +270,7 @@ async function processAppointment(message, user) {
                         }
                         return {
                             code: 200,
-                            message: `Appointment for ${client.f_name} UPN : ${upn} on ${app_date} was created successfully`
+                            message: `Appointment for${client.f_name} : UPN ${upn} on ${app_date} was created successfully`
                         };
                     }).catch(e => {
                         return {

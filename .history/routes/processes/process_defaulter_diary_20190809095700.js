@@ -52,8 +52,6 @@ async function processDefaulterDiary(message, user) {
     let tracing_cost = variables[13];
     let final_outcome1;
     let today = moment(new Date());
-    call_date = moment(call_date, "DD/MM/YYYY").format("YYYY-MM-DD");
-    return_date = moment(return_date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
     if (outcome == "4") {
         final_outcome1 = "";
@@ -64,17 +62,11 @@ async function processDefaulterDiary(message, user) {
         }
     }
 
-    if (outcome == "1") {
+    if (outcome == "1" || outcome == "2") {
         if (final_outcome == "4") {
             final_outcome = "5";
         }
     }
-    if (outcome == "2") {
-        if (final_outcome == "4") {
-            final_outcome = "4";
-        }
-    }
-
     if (final_outcome == "1") {
         final_outcome1 = "3";
     }
@@ -112,11 +104,14 @@ async function processDefaulterDiary(message, user) {
         };
 
     if (moment(call_date).isAfter(new Date().toDateString()))
+    // return {
+    //     code: 400,
+    //     message: "Tracing date can not be greater than current date"
+    // };
         return {
-            code: 400,
-            message: "Tracing date can not be greater than current date"
-        };
-
+        code: 200,
+        message: new Date()
+    }
 
 
     if (moment(return_date).isAfter(new Date().toDateString()))
@@ -125,7 +120,8 @@ async function processDefaulterDiary(message, user) {
             message: "Date of return to care can not be greater than current date"
         };
 
-
+    call_date = moment(call_date, "DD/MM/YYYY").format("YYYY-MM-DD");
+    return_date = moment(return_date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
     let create_outcome = clientOutcome.create({
         client_id: client.id,

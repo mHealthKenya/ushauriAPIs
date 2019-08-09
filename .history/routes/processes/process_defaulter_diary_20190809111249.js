@@ -64,7 +64,7 @@ async function processDefaulterDiary(message, user) {
         }
     }
 
-    if (outcome == "1") {
+    if (outcome == "1" || outcome == "2") {
         if (final_outcome == "4") {
             final_outcome = "5";
         }
