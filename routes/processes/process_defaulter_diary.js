@@ -238,7 +238,7 @@ async function processDefaulterDiary(message, user) {
               },
               { returning: true, where: { id: appointment_details.id } }
             )
-              .then((updated, client) => {
+              .then((updated, appointment) => {
                 return Client.update(
                   {
                     status: "Self Transfer",
