@@ -276,7 +276,7 @@ async function registerClient(message, user) {
     })
       .then(([updated, client]) => {
         if (updated) {
-          if (status != "Active") {
+          if (status != "Active" || status != null || status != "") {
             Appointment.update(
               {
                 active_app: "0",
