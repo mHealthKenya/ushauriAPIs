@@ -108,8 +108,6 @@ async function registerClient(message, user) {
         status = "Disabled";
     } else if (parseInt(client_status) == 3) {
         status = "Deceased";
-    } else if (parseInt(client_status) == 4) {
-        status = "Transfer Out";
     }
     let motivational_enable;
     if (parseInt(motivation_enable) == 1) {
@@ -121,7 +119,7 @@ async function registerClient(message, user) {
     if (transaction_type == 3) {
         client_type = "Transfer";
     } else if (transaction_type == 1) {
-        client_type = "New";
+        client_type = "New"
     }
 
     if (art_start_date == "-1") {
@@ -194,6 +192,7 @@ async function registerClient(message, user) {
                 if (created) {
 
                     if (sms_enable == "Yes" && language != "-1") {
+                        // let sender = Sender
                         let message = await Message.findAll({
                             where: { message_type_id: 3, language_id: language }
                         });
