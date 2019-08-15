@@ -31,7 +31,7 @@ const Client = sequelize.sequelize.define(
             type: Sequelize.INTEGER,
             len: 5
         },
-        status: Sequelize.ENUM("Active", "Disabled", "Deceased", "Self Transfer", "Transfer Out"),
+        status: Sequelize.ENUM("Active", "Disabled", "Deceased", "Self Transfer"),
         client_status: Sequelize.ENUM("Art", "Pre Art"),
         gender: Sequelize.NUMBER,
         marital: Sequelize.NUMBER,
