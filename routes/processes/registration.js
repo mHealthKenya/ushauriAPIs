@@ -106,14 +106,16 @@ async function registerClient(message, user) {
     condition = "Pre-Art";
   }
   let status;
-  if (parseInt(client_status) == 1) {
-    status = "Active";
-  } else if (parseInt(client_status) == 2) {
-    status = "Disabled";
-  } else if (parseInt(client_status) == 3) {
-    status = "Deceased";
-  } else if (parseInt(client_status) == 4) {
-    status = "Transfer Out";
+  if (client_status != "-1") {
+    if (parseInt(client_status) == 1) {
+      status = "Active";
+    } else if (parseInt(client_status) == 2) {
+      status = "Disabled";
+    } else if (parseInt(client_status) == 3) {
+      status = "Deceased";
+    } else if (parseInt(client_status) == 4) {
+      status = "Transfer Out";
+    }
   }
   let motivational_enable;
   if (parseInt(motivation_enable) == 1) {
