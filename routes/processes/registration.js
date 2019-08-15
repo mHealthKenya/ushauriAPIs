@@ -14,10 +14,6 @@ async function registerClient(message, user) {
 
     decoded_message = "Reg*" + decoded_message;
 
-    // return {
-    //     code: 200,
-    //     message: decoded_message
-    // }
 
     const variables = decoded_message.split("*");
     console.log(variables.length);
@@ -278,6 +274,8 @@ async function registerClient(message, user) {
             .then(([updated, client]) => {
 
                 if (updated) {
+
+                    
                     return {
                         code: 200,
                         message: `Client ${upn} was updated successfully`
