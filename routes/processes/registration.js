@@ -15,9 +15,10 @@ async function registerClient(message, user) {
 
     decoded_message = "Reg*" + decoded_message;
 
+
     const variables = decoded_message.split("*");
     console.log(variables.length);
-    if (variables.length != 27)
+    if (variables.length != 28)
         return {
             code: 400,
             message: variables.length
@@ -48,8 +49,9 @@ async function registerClient(message, user) {
     const grouping = variables[22]; //GROUPING
     let locator_county = variables[23]; //LOCATOR COUNTY INFO
     let locator_sub_county = variables[24]; //LOCATOR SUB COUNTY INFO
-    locator_ward = variables[25]; //LOCATOR WARD INFO
-    locator_village = variables[26]; // LOCATOR VILLAGE INFO
+    let locator_ward = variables[25]; //LOCATOR WARD INFO
+    let locator_village = variables[26]; // LOCATOR VILLAGE INFO
+    let locator_location = variables[27]; //LOCATOR LOCATION
 
     const mfl_code = user.facility_id;
     const clinic_id = user.clinic_id;
@@ -200,7 +202,8 @@ async function registerClient(message, user) {
                     locator_county: locator_county,
                     locator_sub_county: locator_sub_county,
                     locator_ward: locator_ward,
-                    locator_village: locator_village
+                    locator_village: locator_village,
+                    locator_location: locator_location
                 }
             })
             .then(async([created, client]) => {
@@ -278,7 +281,8 @@ async function registerClient(message, user) {
             locator_county: locator_county,
             locator_sub_county: locator_sub_county,
             locator_ward: locator_ward,
-            locator_village: locator_village
+            locator_village: locator_village,
+            locator_location: locator_location
         };
 
         let clean_object = await cleanUpdateObject(update_array);

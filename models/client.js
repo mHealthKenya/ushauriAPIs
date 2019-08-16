@@ -67,7 +67,9 @@ const Client = sequelize.sequelize.define(
         locator_county: Sequelize.STRING,
         locator_sub_county: Sequelize.STRING,
         locator_ward: Sequelize.STRING,
+        locator_location: Sequelize.STRING,
         locator_village: Sequelize.STRING,
+        locator_location: Sequelize.STRING,
         created_by: Sequelize.INTEGER,
         updated_by: Sequelize.INTEGER
     }, {
@@ -93,6 +95,7 @@ function validateClient(client) {
         locator_sub_county: Joi.string(),
         locator_ward: Joi.string(),
         locator_village: Joi.string(),
+        locator_location: Joi.string(),
         gender: Joi.number().required(),
         marital: Joi.number().required(),
         client_status: Joi.string().required(),
