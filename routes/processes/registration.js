@@ -51,7 +51,6 @@ async function registerClient(message, user) {
     const clinic_id = user.clinic_id;
     const partner_id = user.partner_id;
     const user_id = user.id;
-    let today = moment(new Date());
 
     let today = moment(new Date().toDateString()).format("YYYY-MM-DD");
 
