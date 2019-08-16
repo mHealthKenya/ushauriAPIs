@@ -279,7 +279,7 @@ async function registerClient(message, user) {
                 where: { clinic_number: upn },
                 returning: true
             })
-            .then(([updated, client]) => {
+            .then(async([updated, client]) => {
                 if (updated) {
                     if (status != "Active" || status != null || status != "") {
                         Appointment.update({
@@ -292,7 +292,6 @@ async function registerClient(message, user) {
 
 
                         })
-                        console.log(client)
 
                         .then(() => {})
                             .catch(e => {});

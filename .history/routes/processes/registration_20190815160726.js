@@ -280,63 +280,66 @@ async function registerClient(message, user) {
                 returning: true
             })
             .then(([updated, client]) => {
-                if (updated) {
-                    if (status != "Active" || status != null || status != "") {
-                        Appointment.update({
-                            active_app: 0,
-                            updated_at: today,
-                            updated_by: user.id
-                        }, {
-                            returning: true,
-                            where: { client_id: client.id }
+                    if (updated) {
+                        if (status != "Active" || status != null || status != "") {
+                            return Appointment.findOne({
+                                where: { client_id: client.id }
+                            });
+                            appointment.update({
+                                    active_app: 0,
+                                    updated_at: today,
+                                    updated_by: user.id
+                                        // }, {
+                                        //     returning: true,
+                                        //     where: { client_id: client.id }
 
 
-                        })
-                        console.log(client)
+                                    // })
+                                )
+                                .then(() => {})
+                                .catch(e => {});
+                            }
 
-                        .then(() => {})
-                            .catch(e => {});
-                    }
+                            return {
+                                code: 200,
+                                message: `Client ${upn} was updated successfully`
+                            };
 
-                    return {
-                        code: 200,
-                        message: `Client ${upn} was updated successfully`
-                    };
-
-                } else {
-                    return {
-                        code: 400,
-                        message: `Could not update client ${upn}`
-                    };
-                }
-            })
-            .catch(e => {
-                return { code: 500, message: e.message };
-            });
-    } else {
-        return {
-            code: 400,
-            message: "Not a valid transaction type"
-        };
-    }
-}
-
-function cleanUpdateObject(obj) {
-    let new_key_array = new Array();
-
-    const value_array = Object.values(obj);
-    const key_array = Object.keys(obj);
-
-    for (let i = 0; i < value_array.length; i++) {
-        if (value_array[i] == "-1") {
-            new_key_array.push(key_array[i]);
+                        } else {
+                            return {
+                                code: 400,
+                                message: `Could not update client ${upn}`
+                            };
+                        }
+                    })
+                .catch(e => {
+                    return { code: 500, message: e.message };
+                });
+            }
+        else {
+            return {
+                code: 400,
+                message: "Not a valid transaction type"
+            };
         }
     }
 
-    for (let j = 0; j < new_key_array.length; j++) {
-        delete obj[new_key_array[j]];
-    }
-    return obj;
-}
+    function cleanUpdateObject(obj) {
+        let new_key_array = new Array();
 
-module.exports = registerClient;
+        const value_array = Object.values(obj);
+        const key_array = Object.keys(obj);
+
+        for (let i = 0; i < value_array.length; i++) {
+            if (value_array[i] == "-1") {
+                new_key_array.push(key_array[i]);
+            }
+        }
+
+        for (let j = 0; j < new_key_array.length; j++) {
+            delete obj[new_key_array[j]];
+        }
+        return obj;
+    }
+
+    module.exports = registerClient;

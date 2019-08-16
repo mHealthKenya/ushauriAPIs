@@ -244,7 +244,7 @@ async function registerClient(message, user) {
             });
     } else if (transaction_type == 2) {
 
-
+        let client = await Client.findOne({ where: { clinic_number: ccc_number } });
         let update_array = {
             f_name: f_name,
             m_name: m_name,
@@ -282,19 +282,17 @@ async function registerClient(message, user) {
             .then(([updated, client]) => {
                 if (updated) {
                     if (status != "Active" || status != null || status != "") {
+                        let appointment = await Appointment.findByPk(client_id);
                         Appointment.update({
-                            active_app: 0,
-                            updated_at: today,
-                            updated_by: user.id
-                        }, {
-                            returning: true,
-                            where: { client_id: client.id }
+                                active_app: 0,
+                                updated_at: today,
+                                updated_by: user.id
+                            }, {
+                                returning: true,
+                                where: { client_id: client.id }
 
-
-                        })
-                        console.log(client)
-
-                        .then(() => {})
+                            })
+                            .then(() => {})
                             .catch(e => {});
                     }
 

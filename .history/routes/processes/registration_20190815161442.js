@@ -281,6 +281,10 @@ async function registerClient(message, user) {
             })
             .then(([updated, client]) => {
                 if (updated) {
+                    return Appointment.findByPk({
+                        returning: true,
+                        where: { client_id: client.id }
+                    })
                     if (status != "Active" || status != null || status != "") {
                         Appointment.update({
                             active_app: 0,
@@ -292,7 +296,6 @@ async function registerClient(message, user) {
 
 
                         })
-                        console.log(client)
 
                         .then(() => {})
                             .catch(e => {});

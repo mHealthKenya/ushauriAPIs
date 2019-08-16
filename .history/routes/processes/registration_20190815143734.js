@@ -283,18 +283,15 @@ async function registerClient(message, user) {
                 if (updated) {
                     if (status != "Active" || status != null || status != "") {
                         Appointment.update({
-                            active_app: 0,
-                            updated_at: today,
-                            updated_by: user.id
-                        }, {
-                            returning: true,
-                            where: { client_id: client.id }
+                                active_app: 0,
+                                updated_at: today,
+                                updated_by: user.id
+                            }, {
+                                returning: true,
+                                where: { client_id: client.id }
 
-
-                        })
-                        console.log(client)
-
-                        .then(() => {})
+                            })
+                            .then(() => {})
                             .catch(e => {});
                     }
 

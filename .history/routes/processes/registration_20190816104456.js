@@ -292,7 +292,7 @@ async function registerClient(message, user) {
 
 
                         })
-                        console.log(client)
+                        console.log(client.id);
 
                         .then(() => {})
                             .catch(e => {});
