@@ -57,7 +57,7 @@ async function moveClient(message, user) {
       updated_by: user.id,
       updated_at: today
     },
-    { returning: true, where: { clinic_number: ccc_number } }
+    { where: { clinic_number: ccc_number } }
   )
     .then(([client, updated]) => {
       return {

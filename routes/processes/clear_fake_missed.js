@@ -106,7 +106,7 @@ async function clearFakeAppointment(message, user) {
           app_status: "Notified",
           visit_type: "Un-Scheduled"
         },
-        { returning: true, where: { id: old_appointment_id } }
+        { where: { id: old_appointment_id } }
       )
         .then(async ([updated, old_app]) => {
           if (updated) {
@@ -208,7 +208,7 @@ async function clearFakeAppointment(message, user) {
           app_status: changed_app_status,
           visit_type: "Scheduled"
         },
-        { returning: true, where: { id: old_appointment_id } }
+        { where: { id: old_appointment_id } }
       )
         .then(([updated, old_app]) => {
           if (updated === 1) {

@@ -149,7 +149,7 @@ async function processDefaulterDiary(message, user) {
         updated_by: user.id,
         updated_at: today
       },
-      { returning: true, where: { id: appointment_details.id } }
+      { where: { id: appointment_details.id } }
     )
       .then(([updated, appointment]) => {
         if (final_outcome == "NULL" || final_outcome == "") {
@@ -168,7 +168,7 @@ async function processDefaulterDiary(message, user) {
                 updated_by: user.id,
                 updated_at: today
               },
-              { returning: true, where: { id: appointment_details.id } }
+              { where: { id: appointment_details.id } }
             )
               .then((updated, appointment) => {})
               .catch(e => {});
@@ -194,7 +194,7 @@ async function processDefaulterDiary(message, user) {
                 fnl_outcome_dte: call_date,
                 date_attended: today
               },
-              { returning: true, where: { id: appointment_details.id } }
+              { where: { id: appointment_details.id } }
             )
               .then((updated, appointment) => {
                 Appointment.create({
@@ -236,7 +236,7 @@ async function processDefaulterDiary(message, user) {
                 updated_by: user.id,
                 updated_at: today
               },
-              { returning: true, where: { id: appointment_details.id } }
+              { where: { id: appointment_details.id } }
             )
               .then((updated, appointment) => {
                 return Client.update(
@@ -245,7 +245,7 @@ async function processDefaulterDiary(message, user) {
                     updated_by: user.id,
                     updated_at: today
                   },
-                  { returning: true, where: { id: client.id } }
+                  { where: { id: client.id } }
                 )
                   .then((updated, appointment) => {})
                   .catch(e => {});
@@ -268,7 +268,7 @@ async function processDefaulterDiary(message, user) {
                 updated_by: user.id,
                 updated_at: today
               },
-              { returning: true, where: { id: appointment_details.id } }
+              { where: { id: appointment_details.id } }
             )
               .then((updated, client) => {
                 Client.update(
@@ -277,7 +277,7 @@ async function processDefaulterDiary(message, user) {
                     updated_by: user.id,
                     updated_at: today
                   },
-                  { returning: true, where: { id: client.id } }
+                  { where: { id: client.id } }
                 )
                   .then((updated, appointment) => {})
                   .catch(e => {});
@@ -302,7 +302,7 @@ async function processDefaulterDiary(message, user) {
             visit_type: "Scheduled",
             fnl_outcome_dte: call_date
           },
-          { returning: true, where: { id: appointment_details.id } }
+          { where: { id: appointment_details.id } }
         )
           .then(([client, updated]) => {
             return {

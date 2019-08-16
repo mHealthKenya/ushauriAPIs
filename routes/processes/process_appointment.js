@@ -177,7 +177,6 @@ async function processAppointment(message, user) {
                                 app_status: "Notified",
                                 visit_type: "Un-Scheduled"
                             }, {
-                                returning: true,
                                 where: { id: active_appointment_details.id }
                             })
                             .then(([updated, old_app]) => {
@@ -316,7 +315,7 @@ async function processAppointment(message, user) {
                             updated_by: user.id,
                             app_status: "Notified",
                             visit_type: "Scheduled"
-                        }, { returning: true, where: { id: old_appointment_id } })
+                        }, {where: { id: old_appointment_id } })
                         .then(([updated, old_app]) => {
 
 

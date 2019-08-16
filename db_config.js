@@ -7,9 +7,15 @@ const password = process.env.DB_PASSWORD;
 const port = process.env.DB_PORT;
 const db_server = process.env.DB_SERVER;
 
-const sequelize = new Sequelize(
-  `postgres://${username}:${password}@${db_server}:${port}/${database}`
-);
+// const sequelize = new Sequelize(
+//   `mysql://${username}:${password}@${db_server}:${port}/${database}`
+// );
+
+const sequelize = new Sequelize(database, username, password, {
+  host: db_server,
+  port: 3307,
+  dialect: "mysql"
+});
 
 const connect = async () => {
   await sequelize
