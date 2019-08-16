@@ -46,10 +46,10 @@ async function registerClient(message, user) {
     const client_status = variables[20]; //CLIENT STATUS 19
     const transaction_type = variables[21]; //TRANSACTION TYPE 20
     const grouping = variables[22]; //GROUPING
-    let locator_county = variables[23] //LOCATOR COUNTY INFO
-    let locator_sub_county = variables[24] //LOCATOR SUB COUNTY INFO
-    locator_ward = variables[25] //LOCATOR WARD INFO
-    locator_village = variables[26] // LOCATOR VILLAGE INFO
+    let locator_county = variables[23]; //LOCATOR COUNTY INFO
+    let locator_sub_county = variables[24]; //LOCATOR SUB COUNTY INFO
+    locator_ward = variables[25]; //LOCATOR WARD INFO
+    locator_village = variables[26]; // LOCATOR VILLAGE INFO
 
     const mfl_code = user.facility_id;
     const clinic_id = user.clinic_id;
