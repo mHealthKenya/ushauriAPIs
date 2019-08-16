@@ -9,6 +9,7 @@ const processAppointment = require("./processes/process_appointment");
 const clearFakeMissed = require("./processes/clear_fake_missed");
 const processDefaulterDiary = require("./processes/process_defaulter_diary");
 const moveClient = require("./processes/clinic_movement");
+const transitClient = require("./processes/transit_client");
 
 router.post("/", async (req, res) => {
   let message = req.body.msg;
@@ -43,6 +44,9 @@ router.post("/", async (req, res) => {
     message.includes("LTFU")
   ) {
     let result = await processDefaulterDiary(message, user);
+    res.status(`${result.code}`).send(`${result.message}`);
+  } else if (message.includes("TRANSITCLIENT")) {
+    let result = await transitClient(message, user);
     res.status(`${result.code}`).send(`${result.message}`);
   }
 });
@@ -84,7 +88,10 @@ router.get("/:id", async (req, res) => {
         message.includes("LTFU")
       ) {
         let result = await processDefaulterDiary(message, user);
-        res.status(`${result.code}`).send(`${result.message}`);
+        Sender(phone, `${result.message}`);
+      } else if (message.includes("TRANSITCLIENT")) {
+        let result = await transitClient(message, user);
+        Sender(phone, `${result.message}`);
       }
     }
 
