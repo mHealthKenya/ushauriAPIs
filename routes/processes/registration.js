@@ -51,6 +51,7 @@ async function registerClient(message, user) {
   const clinic_id = user.clinic_id;
   const partner_id = user.partner_id;
   const user_id = user.id;
+  let today = moment(new Date());
 
   if (!upn) return { code: 400, message: "Clinic Number not provided" };
   if (!f_name) return { code: 400, message: "First Name not provided" };
@@ -285,7 +286,7 @@ async function registerClient(message, user) {
               },
               {
                 returning: true,
-                where: { client_id: client.id }
+                where: { client_id: client[0].id }
               }
             )
               .then(() => {})
