@@ -25,13 +25,14 @@ router.post("/", async(req, res) => {
         let user_id = appointments[i].id;
         let clinic_id = appointments[i].clinic_id;
         let appointment_id = appointments[i].appointment_id;
-        let CCC = appointments[i].ccc;
+        let ccc = appointments[i].CCC;
         let client_name = appointments[i].client_name;
         let client_phone_no = appointments[i].client_phone_no;
         let appointment_type = appointments[i].appointment_type;
         let appointment_date = appointments[i].appntmnt_date;
         let file_no = appointments[i].file_no;
         let buddy_phone_no = appointments[i].buddy_phone_no;
+        let other_appointment_type = appointments[1].other_appointment_type;
         appointments[i].trmnt_buddy_phone_no = '';
         if (appointments[i].buddy_phone_no == "") {
             appointments[i].trmnt_buddy_phone_no = '-1';
@@ -43,6 +44,11 @@ router.post("/", async(req, res) => {
             appointments[i].file_no = '-1';
         } else {
             appointments[i].file_no = appointments[i].file_no;
+        }
+        if (appointments[i].other_appointment_type == "") {
+            appointments[i].other_appointment_type = '-1';
+        } else {
+            appointments[i].other_appointment_type = appointments[i].other_appointment_type;
         }
 
         if (appointments[i].client_name == "") {
