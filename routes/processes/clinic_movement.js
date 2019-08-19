@@ -10,7 +10,6 @@ async function moveClient(message, user) {
     message = message.split("#");
     let decoded_message = await base64.decode(message[0]);
 
-
     //check validity of base 64 encode
     if (!(base64.encode(decoded_message).trim() === message[0].trim()))
         return {
