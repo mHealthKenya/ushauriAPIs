@@ -17,61 +17,69 @@ async function moveClient(message, user) {
             message: "Your application needs to be updated to use this feature"
         };
 
+    // return {
+    //     code: 200,
+    //     message: Clinic.findByPk(Clinic.id)
+    // }
 
-    decoded_message = "MOVECLINIC*" + decoded_message;
+
+    // console.log(Clinic);
+
+
+
+    //decoded_message = "MOVECLINIC*" + decoded_message;
 
 
     const variables = decoded_message.split("*");
 
-    const message_code = variables[0];
-    const ccc_number = variables[1];
-    const clinic_id = variables[2];
-    let today = moment(new Date()).format("YYYY-MM-DD");
-    let client = await Client.findOne({ where: { clinic_number: ccc_number } });
-    let clinic = await Clinic.findByPk(clinic_id);
+    //const message_code = variables[0];
+    const ccc_number = variables[0];
+    const clinic_id = variables[1];
+    let clinic = await Clinic.findByPk(clinic_id));
+let today = moment(new Date()).format("YYYY-MM-DD");
+let client = await Client.findOne({ where: { clinic_number: ccc_number } });
 
+if (!clinic)
+    return {
+        code: 400,
+        message: `Clinic: ${clinic_id} does not exist in the system.`
+    };
 
-    if (!clinic)
-        return {
-            code: 400,
-            message: `Clinic: ${clinic_id} does not exist in the system.`
-        };
-
-    if (!client)
-        return {
-            code: 400,
-            message: `Client: ${ccc_number} does not exist in the system. Please register them first.`
-        };
-    if (client.status != "Active")
-        return {
-            code: 400,
-            message: `Client: ${ccc_number} is not active in the system.`
-        };
-    if (client.clinic_id == clinic_id)
-        return {
-            code: 400,
-            message: `Client: ${ccc_number} already exists in the  Clinic : ${
+if (!client)
+    return {
+        code: 400,
+        message: `Client: ${ccc_number} does not exist in the system. Please register them first.`
+    };
+if (client.status != "Active")
+    return {
+        code: 400,
+        message: `Client: ${ccc_number} is not active in the system.`
+    };
+if (client.clinic_id == clinic_id)
+    return {
+        code: 400,
+        message: `Client: ${ccc_number} already exists in the  Clinic : ${
         clinic.name
       } and cannot be moved . `
-        };
-    return Client.update({
-            clinic_id: clinic.id,
-            updated_by: user.id,
-            updated_at: today
-        }, { where: { clinic_number: ccc_number } })
-        .then(([client, updated]) => {
-            return {
-                code: 200,
-                message: `Client ${ccc_number} was successfully moved to new Clinic: ${
+    };
+return Client.update({
+        clinic_id: clinic.id,
+        updated_by: user.id,
+        updated_at: today
+    }, { returning: true, where: { clinic_number: ccc_number } })
+    .then(([client, updated]) => {
+        return {
+            code: 200,
+            message: `Client ${ccc_number} was successfully moved to new Clinic: ${
           clinic.name
         } `
-            };
-        })
-        .catch(e => {
-            return {
-                code: 500,
-                message: `Could not move client ${ccc_number} to the new clinic.`
-            };
-        });
+        };
+    })
+    .catch(e => {
+        return {
+            code: 500,
+            message: `Could not move client ${ccc_number} to the new clinic.`
+        };
+    });
 }
 module.exports = moveClient;
