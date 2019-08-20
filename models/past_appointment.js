@@ -19,6 +19,7 @@ const PastAppointments = sequelize.sequelize.define(
         facility_id: Sequelize.INTEGER,
         user_phone_no: Sequelize.STRING,
         id: Sequelize.INTEGER,
+        User_Clinic: Sequelize.INTEGER,
         other_appointment_type: Sequelize.STRING,
         created_at: Sequelize.STRING
     }, {

@@ -24,6 +24,7 @@ router.post("/", async(req, res) => {
         let mfl_code = appointments[i].facility_id;
         let user_id = appointments[i].id;
         let clinic_id = appointments[i].clinic_id;
+        let User_Clinic = appointments[i].User_Clinic;
         let appointment_id = appointments[i].appointment_id;
         let ccc = appointments[i].CCC;
         let client_name = appointments[i].client_name;
