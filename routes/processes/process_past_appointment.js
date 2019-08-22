@@ -11,9 +11,12 @@ router.post("/", async(req, res) => {
     if (!user) res.status(400).send(`Phone Number: ${phone_no} is not registered in the system`);
     if (user.status != 'Active') res.status(400).send(`Phone Number: ${phone_no} is not active in the system`);
 
+    let mfl = user.facility_id;
+    let clinic = user.clinic_id;
+
     let appointments = await PastAppointments.findAll({
         where: {
-            mfl_code: mfl,
+            facility_id: mfl,
             clinic_id: clinic
         }
     });
