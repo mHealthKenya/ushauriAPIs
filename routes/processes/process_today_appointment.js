@@ -15,7 +15,9 @@ router.post("/", async(req, res) => {
         where: {
             user_phone_no: phone_no
         }
+
     });
+
 
     if (!appointments) res.status(400).send(`You do not have any today's appointments`);
     let message = new Array();
@@ -27,7 +29,7 @@ router.post("/", async(req, res) => {
         let user_id = appointments[i].id;
         let clinic_id = appointments[i].clinic_id;
         let appointment_id = appointments[i].appointment_id;
-        let CCC = appointments[i].ccc;
+        let CCC = appointments[i].clinic_no;
         let client_name = appointments[i].client_name;
         let client_phone_no = appointments[i].client_phone_no;
         let appointment_type = appointments[i].appointment_type;
@@ -35,8 +37,6 @@ router.post("/", async(req, res) => {
         let file_no = appointments[i].file_no;
         let buddy_phone_no = appointments[i].buddy_phone_no;
         appointments[i].trmnt_buddy_phone_no = '';
-        console.log(CCC);
-
         if (appointments[i].buddy_phone_no == "") {
             appointments[i].trmnt_buddy_phone_no = '-1';
         } else {

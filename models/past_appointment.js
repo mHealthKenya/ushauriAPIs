@@ -2,7 +2,7 @@ const sequelize = require("../db_config");
 const Sequelize = require("sequelize");
 
 const PastAppointments = sequelize.sequelize.define(
-    "past_appointments", {
+    "tbl_past_appointments", {
         appointment_id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
@@ -26,7 +26,7 @@ const PastAppointments = sequelize.sequelize.define(
         timestamps: false,
         underscored: true,
         freezeTableName: true,
-        tableName: "past_appointments"
+        tableName: "tbl_past_appointments"
     }
 );
 exports.PastAppointments = PastAppointments;

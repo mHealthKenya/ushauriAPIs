@@ -2,14 +2,14 @@ const sequelize = require("../db_config");
 const Sequelize = require("sequelize");
 
 const TodayAppointments = sequelize.sequelize.define(
-    "todays_appointments", {
+    "tbl_todays_appointment_query", {
         appointment_id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: false
         },
         clinic_id: Sequelize.INTEGER,
-        ccc: Sequelize.INTEGER,
+        clinic_no: Sequelize.INTEGER,
         client_name: Sequelize.STRING,
         appointment_kept: Sequelize.STRING,
         client_phone_no: Sequelize.STRING,
@@ -25,7 +25,7 @@ const TodayAppointments = sequelize.sequelize.define(
         timestamps: false,
         underscored: true,
         freezeTableName: true,
-        tableName: "todays_appointments"
+        tableName: "tbl_todays_appointment_query"
     }
 );
 exports.TodayAppointments = TodayAppointments;
