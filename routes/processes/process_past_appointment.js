@@ -9,10 +9,12 @@ router.post("/", async(req, res) => {
 
     let user = await User.findOne({ where: { phone_no: phone_no } });
     if (!user) res.status(400).send(`Phone Number: ${phone_no} is not registered in the system`);
+    if (user.status != 'Active') res.status(400).send(`Phone Number: ${phone_no} is not active in the system`);
 
     let appointments = await PastAppointments.findAll({
         where: {
-            user_phone_no: phone_no
+            mfl_code: mfl,
+            clinic_id: clinic
         }
     });
 
