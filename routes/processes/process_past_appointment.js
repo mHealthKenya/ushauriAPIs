@@ -24,9 +24,9 @@ router.post("/", async(req, res) => {
         let mfl_code = appointments[i].facility_id;
         let user_id = appointments[i].id;
         let clinic_id = appointments[i].clinic_id;
-        let User_Clinic = appointments[i].User_Clinic;
+        let user_clinic = appointments[i].user_clinic;
         let appointment_id = appointments[i].appointment_id;
-        let ccc = appointments[i].CCC;
+        let ccc = appointments[i].clinic_no;
         let client_name = appointments[i].client_name;
         let client_phone_no = appointments[i].client_phone_no;
         let appointment_type = appointments[i].appointment_type;
@@ -76,7 +76,7 @@ router.post("/", async(req, res) => {
         } else {
             appointments[i].appointment_id = appointments[i].appointment_id;
         }
-        let outgoing_msg = CCC + "*" + client_name +
+        let outgoing_msg = ccc + "*" + client_name +
             "*" + client_phone_no +
             "*" + appointment_type +
             "*" + appointment_id +

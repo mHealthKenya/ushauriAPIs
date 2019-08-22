@@ -9,7 +9,7 @@ const PastAppointments = sequelize.sequelize.define(
             autoIncrement: false
         },
         clinic_id: Sequelize.INTEGER,
-        CCC: Sequelize.INTEGER,
+        clinic_no: Sequelize.INTEGER,
         client_name: Sequelize.STRING,
         client_phone_no: Sequelize.STRING,
         appointment_type: Sequelize.STRING,
@@ -19,7 +19,7 @@ const PastAppointments = sequelize.sequelize.define(
         facility_id: Sequelize.INTEGER,
         user_phone_no: Sequelize.STRING,
         id: Sequelize.INTEGER,
-        User_Clinic: Sequelize.INTEGER,
+        user_clinic: Sequelize.INTEGER,
         other_appointment_type: Sequelize.STRING,
         created_at: Sequelize.STRING
     }, {
