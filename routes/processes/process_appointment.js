@@ -158,13 +158,13 @@ async function processAppointment(message, user) {
                             };
                         //if new app date - today > 30 days, return cannot book unscheduled > 30 days
 
-                        let diff_days = moment(app_date).diff(today, "days");
-                        if (diff_days > 30) {
-                            return {
-                                code: 400,
-                                message: `Cannot book an Un-Scheduled visit which is more than 30 days from the original date of appointment`
-                            };
-                        }
+                        //let diff_days = moment(app_date).diff(today, "days");
+                        // if (diff_days > 30) {
+                        //     return {
+                        //         code: 400,
+                        //         message: `Cannot book an Un-Scheduled visit which is more than 30 days from the original date of appointment`
+                        //     };
+                        // }
                         // if less than 30 days, book unscheduled
 
                         return Appointment.update({
