@@ -315,7 +315,7 @@ async function processAppointment(message, user) {
                             updated_by: user.id,
                             app_status: "Notified",
                             visit_type: "Scheduled"
-                        }, {where: { id: old_appointment_id } })
+                        }, { where: { id: old_appointment_id } })
                         .then(([updated, old_app]) => {
 
 
