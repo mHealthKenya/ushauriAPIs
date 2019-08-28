@@ -5,6 +5,20 @@ const base64 = require("base64util");
 
 const { User } = require("../../models/user");
 
+function isEmpty(myvalue) {
+    let isNull = true;
+    if (myvalue == "" || myvalue == null || myvalue === null || myvalue == undefined) {
+
+        isNull = true;
+    } else {
+
+        isNull = false;
+    }
+
+    return isNull;
+
+}
+
 router.post("/", async(req, res) => {
     let phone_no = req.body.phone_no;
 
@@ -43,41 +57,31 @@ router.post("/", async(req, res) => {
         let file_no = appointments[i].file_no;
         let buddy_phone_no = appointments[i].buddy_phone_no;
         appointments[i].trmnt_buddy_phone_no = '';
-        if (appointments[i].buddy_phone_no == "") {
+        if (isEmpty(buddy_phone_no)) {
             appointments[i].trmnt_buddy_phone_no = '-1';
         } else {
             appointments[i].trmnt_buddy_phone_no = appointments[i].buddy_phone_no;
         }
 
-        if (appointments[i].file_no == " ") {
-            appointments[i].file_no = '-1';
-        } else {
-            appointments[i].file_no = appointments[i].file_no;
+        if (isEmpty(file_no)) {
+            file_no = '-1';
         }
 
-        if (appointments[i].client_name == "") {
+        if (isEmpty(client_name)) {
             appointments[i].client_name = '-1';
-        } else {
-            appointments[i].client_name = appointments[i].client_name;
         }
 
-        if (appointments[i].client_phone_no == "") {
-            appointments[i].client_phone_no = '-1';
-        } else {
-            appointments[i].client_phone_no = appointments[i].client_phone_no;
+        if (isEmpty(client_phone_no)) {
+            client_phone_no = '-1';
         }
 
-        if (appointments[i].appointment_type == "") {
-            appointments[i].appointment_type = '-1';
-        } else {
-            appointments[i].appointment_type = appointments[i].appointment_type;
+        if (isEmpty(appointment_type)) {
+            appointment_type = '-1';
         }
 
 
-        if (appointments[i].appointment_id == "") {
-            appointments[i].appointment_id = '-1';
-        } else {
-            appointments[i].appointment_id = appointments[i].appointment_id;
+        if (isEmpty(appointment_id)) {
+            appointment_id = '-1';
         }
 
         let outgoing_msg = CCC + "*" + client_name +
