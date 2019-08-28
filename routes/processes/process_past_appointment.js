@@ -4,6 +4,7 @@ const router = express.Router();
 const { User } = require("../../models/user");
 const base64 = require("base64util");
 
+
 router.post("/", async(req, res) => {
     let phone_no = req.body.phone_no;
 
@@ -40,13 +41,13 @@ router.post("/", async(req, res) => {
         let buddy_phone_no = appointments[i].buddy_phone_no;
         let other_appointment_type = appointments[1].other_appointment_type;
         appointments[i].trmnt_buddy_phone_no = '';
-        if (appointments[i].buddy_phone_no == "") {
+        if (appointments[i].buddy_phone_no == "" || appointments[i].buddy_phone_no == null) {
             appointments[i].trmnt_buddy_phone_no = '-1';
         } else {
             appointments[i].trmnt_buddy_phone_no = appointments[i].buddy_phone_no;
         }
 
-        if (appointments[i].file_no == " ") {
+        if (appointments[i].file_no == "" || appointments[i].file_no == null) {
             appointments[i].file_no = '-1';
         } else {
             appointments[i].file_no = appointments[i].file_no;
