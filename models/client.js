@@ -27,6 +27,7 @@ const Client = sequelize.sequelize.define(
         alt_phone_no: Sequelize.STRING,
         buddy_phone_no: Sequelize.STRING,
         shared_no_name: Sequelize.STRING,
+        partner_id: Sequelize.INTEGER,
         mfl_code: {
             type: Sequelize.INTEGER,
             len: 5
@@ -38,7 +39,7 @@ const Client = sequelize.sequelize.define(
             "Self Transfer",
             "Transfer Out"
         ),
-        client_status: Sequelize.ENUM("Art", "Pre Art"),
+        client_status: Sequelize.ENUM("ART", "Pre-Art", "On Care", "No Condition"),
         gender: Sequelize.NUMBER,
         marital: Sequelize.NUMBER,
         smsenable: Sequelize.ENUM("Yes", "No"),
@@ -61,6 +62,7 @@ const Client = sequelize.sequelize.define(
         prev_clinic: Sequelize.STRING,
         ushauri_id: Sequelize.INTEGER,
         db_source: Sequelize.STRING,
+        clnd_dob: Sequelize.DATEONLY,
         clinic_id: Sequelize.INTEGER,
         national_id: Sequelize.STRING,
         file_no: Sequelize.STRING,
