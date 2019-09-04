@@ -40,7 +40,7 @@ async function registerClient(message, user) {
     const primary_phone_no = variables[13]; //PHONE NUMBER 14
     const alt_phone_no = variables[14]; //PHONE NUMBER 14
     const trtmnt_buddy_phone_no = variables[15]; //PHONE NUMBER 14
-    const language = variables[16]; //LANGUAGE 16
+    let language = variables[16]; //LANGUAGE 16
     let sms_enable = variables[17]; //SMS ENABLE 15
     const motivation_enable = variables[18]; //MOTIVATIONAL ALERTS ENABLE 18
     const messaging_time = variables[19]; //MESSAGING TIME 17
@@ -141,6 +141,9 @@ async function registerClient(message, user) {
     if (art_start_date == "-1") {
         art_start_date = null;
 
+    }
+    if (language == "-1") {
+        language = null;
     }
 
     if (transaction_type == 1 || transaction_type == 3) {
