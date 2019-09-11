@@ -40,7 +40,7 @@ async function registerClient(message, user) {
     const primary_phone_no = variables[13]; //PHONE NUMBER 14
     const alt_phone_no = variables[14]; //PHONE NUMBER 14
     const trtmnt_buddy_phone_no = variables[15]; //PHONE NUMBER 14
-    const language = variables[16]; //LANGUAGE 16
+    let language = variables[16]; //LANGUAGE 16
     let sms_enable = variables[17]; //SMS ENABLE 15
     const motivation_enable = variables[18]; //MOTIVATIONAL ALERTS ENABLE 18
     const messaging_time = variables[19]; //MESSAGING TIME 17
@@ -109,7 +109,7 @@ async function registerClient(message, user) {
         sms_enable = "No";
     }
     if (parseInt(condition) == 1) {
-        condition = "Art";
+        condition = "ART";
     } else if (parseInt(condition) == 2) {
         condition = "Pre-Art";
     }
@@ -140,6 +140,10 @@ async function registerClient(message, user) {
 
     if (art_start_date == "-1") {
         art_start_date = null;
+
+    }
+    if (language == "-1") {
+        language = null;
     }
 
     if (transaction_type == 1 || transaction_type == 3) {
@@ -168,45 +172,48 @@ async function registerClient(message, user) {
 
         //save the client details
         return Client.findOrCreate({
-                where: { clinic_number: upn },
-                defaults: {
-                    mfl_code: mfl_code,
-                    f_name: f_name,
-                    m_name: m_name,
-                    l_name: l_name,
-                    dob: dob,
-                    gender: gender,
-                    marital: marital,
-                    client_status: condition,
-                    enrollment_date: enrollment_date,
-                    group_id: group_id,
-                    phone_no: primary_phone_no,
-                    alt_phone_no: alt_phone_no,
-                    buddy_phone_no: trtmnt_buddy_phone_no,
-                    language_id: language,
-                    smsenable: sms_enable,
-                    consent_date: consented,
-                    partner_id: partner_id,
-                    status: status,
-                    art_date: art_start_date,
-                    created_at: b,
-                    entry_point: "Mobile",
-                    created_by: user_id,
-                    client_type: client_type,
-                    txt_time: messaging_time,
-                    motivational_enable: motivational_enable,
-                    wellness_enable: motivational_enable,
-                    national_id: national_id,
-                    file_no: serial_no,
-                    clinic_id: clinic_id,
-                    locator_county: locator_county,
-                    locator_sub_county: locator_sub_county,
-                    locator_ward: locator_ward,
-                    locator_village: locator_village,
-                    locator_location: locator_location
-                }
-            })
-            .then(async([created, client]) => {
+            where: { clinic_number: upn },
+            defaults: {
+                mfl_code: mfl_code,
+                f_name: f_name,
+                m_name: m_name,
+                l_name: l_name,
+                dob: dob,
+                gender: gender,
+                marital: marital,
+                client_status: condition,
+                enrollment_date: enrollment_date,
+                group_id: group_id,
+                phone_no: primary_phone_no,
+                alt_phone_no: alt_phone_no,
+                buddy_phone_no: trtmnt_buddy_phone_no,
+                language_id: language,
+                smsenable: sms_enable,
+                consent_date: consented,
+                partner_id: partner_id,
+                status: status,
+                art_date: art_start_date,
+                created_at: b,
+                entry_point: "Mobile",
+                created_by: user_id,
+                client_type: client_type,
+                txt_time: messaging_time,
+                motivational_enable: motivational_enable,
+                wellness_enable: motivational_enable,
+                national_id: national_id,
+                file_no: serial_no,
+                clnd_dob: dob,
+                clinic_id: clinic_id,
+                locator_county: locator_county,
+                locator_sub_county: locator_sub_county,
+                locator_ward: locator_ward,
+                locator_village: locator_village,
+                locator_location: locator_location
+            }
+
+        })
+
+        .then(async([created, client]) => {
                 if (created) {
                     if (sms_enable == "Yes" && language != "-1") {
                         let message = await Message.findAll({
@@ -253,6 +260,7 @@ async function registerClient(message, user) {
                     message: e.message
                 };
             });
+
     } else if (transaction_type == 2) {
         let update_array = {
             f_name: f_name,
