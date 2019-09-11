@@ -20,7 +20,9 @@ async function moveClient(message, user) {
   const variables = decoded_message.split("*");
   const ccc_number = variables[0];
   const clinic_id = variables[1];
+
   let clinic = await Clinic.findByPk(clinic_id);
+
   let today = moment(new Date()).format("YYYY-MM-DD");
   let client = await Client.findOne({ where: { clinic_number: ccc_number } });
 

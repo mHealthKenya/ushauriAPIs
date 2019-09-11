@@ -58,10 +58,15 @@ router.get("/:id", async (req, res) => {
   if (!incoming)
     res.status(400).send(`Incoming ID: ${incoming_id} not in the system`);
 
-  if (incoming.processed == "No") {
+  if (incoming.processed == "Not Processed") {
     let message = incoming.msg;
     message = message.split("#");
-    const phone = incoming.source;
+    let phone = incoming.source;
+
+    phone = phone.substring(4);
+    phone = "0" + phone;
+
+    console.log(phone);
     message = message[0];
 
     let user = await User.findOne({ where: { phone_no: phone } });
@@ -97,7 +102,7 @@ router.get("/:id", async (req, res) => {
 
     Incoming.update(
       {
-        processed: "Yes"
+        processed: "Processed"
       },
       { returning: true, where: { id: incoming_id } }
     )
