@@ -58,10 +58,15 @@ router.get("/:id", async(req, res) => {
     if (!incoming)
         res.status(400).send(`Incoming ID: ${incoming_id} not in the system`);
 
-    if (incoming.processed == "No") {
+    if (incoming.processed == "Not Processed") {
         let message = incoming.msg;
         message = message.split("#");
-        const phone = incoming.source;
+        let phone = incoming.source;
+
+        phone = phone.substring(4);
+        phone = "0" + phone;
+
+        console.log(phone);
         message = message[0];
 
         let user = await User.findOne({ where: { phone_no: phone } });
@@ -80,10 +85,8 @@ router.get("/:id", async(req, res) => {
                 let result = await processAppointment(message, user);
                 Sender(phone, `${result.message}`);
             } else if (message.includes("MOVECLINIC")) {
-                console.log("inside move clinic");
-                // let result = await moveClient(message, user);
-                // // Sender(phone, `${result.message}`);
-                // res.status(`${result.code}`).send(`${result.message}`);
+                let result = await moveClient(message, user);
+                Sender(phone, `${result.message}`);
             } else if (
                 message.includes("MSD") ||
                 message.includes("DF") ||
@@ -98,7 +101,7 @@ router.get("/:id", async(req, res) => {
         }
 
         Incoming.update({
-                processed: "Yes"
+                processed: "Processed"
             }, { returning: true, where: { id: incoming_id } })
             .then(([client, updated]) => {})
             .catch(e => {});
