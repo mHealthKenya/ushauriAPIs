@@ -37,7 +37,6 @@ router.post("/", async(req, res) => {
         res.status(`${result.code}`).send(`${result.message}`);
     } else if (message.includes("MOVECLINIC")) {
         let result = await moveClient(message, user);
-        //Sender(phone, `${result.message}`);
         res.status(`${result.code}`).send(`${result.message}`);
     } else if (
         message.includes("MSD") ||
@@ -81,8 +80,10 @@ router.get("/:id", async(req, res) => {
                 let result = await processAppointment(message, user);
                 Sender(phone, `${result.message}`);
             } else if (message.includes("MOVECLINIC")) {
-                let result = await moveClient(message, user);
-                Sender(phone, `${result.message}`);
+                console.log("inside move clinic");
+                // let result = await moveClient(message, user);
+                // // Sender(phone, `${result.message}`);
+                // res.status(`${result.code}`).send(`${result.message}`);
             } else if (
                 message.includes("MSD") ||
                 message.includes("DF") ||
