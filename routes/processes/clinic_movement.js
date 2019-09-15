@@ -11,6 +11,11 @@
         message = message.split("#");
         let decoded_message = await base64.decode(message[0]);
 
+        // return {
+        //     code: 200,
+        //     message: decoded_message
+        // }
+
         //check validity of base 64 encode
         if (!(base64.encode(decoded_message).trim() === message[0].trim()))
             return {
@@ -25,21 +30,6 @@
         let today = moment(new Date()).format("YYYY-MM-DD");
         let client = await Client.findOne({ where: { clinic_number: ccc_number } });
 
-        const variables = decoded_message.split("*");
-        const ccc_number = variables[0];
-        const clinic_id = variables[1];
-
-        let clinic = await Clinic.findByPk(clinic_id);
-
-        let today = moment(new Date()).format("YYYY-MM-DD");
-        let client = await Client.findOne({ where: { clinic_number: ccc_number } });
-
-        const variables = decoded_message.split("*");
-        const ccc_number = variables[0];
-        const clinic_id = variables[1];
-        let clinic = await Clinic.findByPk(clinic_id);
-        let today = moment(new Date()).format("YYYY-MM-DD");
-        let client = await Client.findOne({ where: { clinic_number: ccc_number } });
 
 
         if (!clinic)

@@ -22,7 +22,10 @@ router.post("/", async(req, res) => {
         .status(400)
         .send(`Phone Number: ${phone} is not registered in the system`);
 
+
+
     //check if message if registration message
+
     if (message.includes("Reg")) {
         let result = await registerClient(message, user);
         res.status(`${result.code}`).send(`${result.message}`);
