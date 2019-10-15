@@ -44,7 +44,7 @@ async function processAppointment(message, user) {
     }
     let app_date = moment(new_app_date, "DD/MM/YYYY").format("YYYY-MM-DD");
     if (!app_date || app_date == "1970-01-01") {
-        return {
+        return { 
             code: 400,
             message: "Invalid Appointment Date , DD/MM/YYYY is the  appropriate date format"
         };
@@ -71,48 +71,7 @@ async function processAppointment(message, user) {
 
             if (existing_appointments === 0) {
                 //new booking, no record of previous appointment
-                return Appointment.create({
-                    app_status: "Booked",
-                    appntmnt_date: app_date,
-                    status: "Active",
-                    sent_status: "Sent",
-                    client_id: client.id,
-                    created_at: today,
-                    created_by: user.id,
-                    app_type_1: appointment_type,
-                    entry_point: "Mobile",
-                    visit_type: "Scheduled",
-                    active_app: "1"
-                }).then((new_app) => {
-                    if (appointment_type == "6") {
-                        return OtherAppointmentType.create({
-                            name: appointment_other,
-                            created_by: user.id,
-                            created_at: today,
-                            appointment_id: new_app.id
-                        }).then((other_app) => {
-                            return {
-                                code: 200,
-                                message: `Appointment for ${upn} on ${app_date} was created successfully`
-                            };
-                        }).catch(e => {
-                            return {
-                                code: 200,
-                                message: "An error occured, could not create other  Appointment type "
-                            };
-                        })
-
-                    }
-                    return {
-                        code: 200,
-                        message: `Appointment for ${upn} on ${app_date} was created successfully`
-                    };
-                }).catch(e => {
-                    return {
-                        code: 500,
-                        message: "An error occured, could not create Appointment"
-                    };
-                })
+                  
             } else {
                 // appointment history exists
 

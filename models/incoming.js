@@ -15,7 +15,7 @@ const Incoming = sequelize.sequelize.define(
     senttime: Sequelize.STRING,
     receivedtime: Sequelize.STRING,
     reference: Sequelize.STRING,
-    processed: Sequelize.ENUM("Yes", "No"),
+    processed: Sequelize.ENUM("Processed", "Not Processed"),
     status: Sequelize.ENUM("Active"),
     created_by: Sequelize.INTEGER,
     updated_by: Sequelize.INTEGER
