@@ -11,6 +11,7 @@ const processDefaulterDiary = require("./processes/process_defaulter_diary");
 const moveClient = require("./processes/clinic_movement");
 const transitClient = require("./processes/transit_client");
 const getTodaysAppoitnmentSMS = require("./processes/get_todays_appointments_sms");
+const getPastAppoitnmentSMS = require("./processes/get_past_appointments_sms");
 
 router.post("/", async (req, res) => {
   let message = req.body.msg;
@@ -102,10 +103,24 @@ router.get("/:id", async (req, res) => {
         Sender(phone, `${result.message}`);
       } else if (!isNaN(message)) {
         let result = await getTodaysAppoitnmentSMS(message);
-        for (let i = 0; i < result.length; i++) {
-          let msg = "<# " + result[i] + " iV4Mr+5+/zX>";
-          Sender(phone, msg);
+        if (Array.isArray(result)) {
+          for (let i = 0; i < result.length; i++) {
+            let msg = "<# " + result[i] + " iV4Mr+5+/zX>";
+            // console.log(`todays: ${msg}`);
+            Sender(phone, msg);
+          }
+          Sender(phone, result);
         }
+        let pastresult = await getPastAppoitnmentSMS(message);
+
+        if (Array.isArray(pastresult)) {
+          for (let i = 0; i < pastresult.length; i++) {
+            let msg = "<# " + pastresult[i] + " iV4Mr+5+/zX>";
+            // console.log(`past: ${msg}`);
+            Sender(phone, msg);
+          }
+        }
+        Sender(phone, pastresult);
       }
     }
 
