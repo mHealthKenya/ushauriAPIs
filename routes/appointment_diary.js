@@ -100,6 +100,8 @@ router.get("/:id", async(req, res) => {
             } else if (message.includes("TRANSITCLIENT")) {
                 let result = await transitClient(message, user);
                 Sender(phone, `${result.message}`);
+            } else if (message) {
+
             }
         }
 
