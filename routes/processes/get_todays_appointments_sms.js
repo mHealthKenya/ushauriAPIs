@@ -1,38 +1,13 @@
 const { TodayAppointments } = require("../../models/todays_appointment");
-const express = require("express");
-const router = express.Router();
 const base64 = require("base64util");
-
 const { User } = require("../../models/user");
 
-function isEmpty(myvalue) {
-  let isNull = true;
-  if (
-    myvalue == "" ||
-    myvalue == null ||
-    myvalue === null ||
-    myvalue == undefined
-  ) {
-    isNull = true;
-  } else {
-    isNull = false;
-  }
-
-  return isNull;
-}
-
-router.post("/", async (req, res) => {
-  let phone_no = req.body.phone_no;
-
+module.exports = async function getTodaysAppointment(phone_no) {
   let user = await User.findOne({ where: { phone_no: phone_no } });
-  if (!user)
-    res
-      .status(400)
-      .send(`Phone Number: ${phone_no} is not registered in the system`);
+  if (!user) return `Phone Number: ${phone_no} is not registered in the system`;
+
   if (user.status != "Active")
-    res
-      .status(400)
-      .send(`Phone Number: ${phone_no} is not active in the system`);
+    return `Phone Number: ${phone_no} is not active in the system`;
 
   let mfl = user.facility_id;
   let clinic = user.clinic_id;
@@ -45,7 +20,7 @@ router.post("/", async (req, res) => {
   });
 
   if (appointments === undefined || appointments.length == 0)
-    res.status(400).send(`You do not have any today's appointments`);
+    return `You do not have any appointments today`;
 
   let message = new Array();
   for (let i = 0; i < appointments.length; i++) {
@@ -106,13 +81,24 @@ router.post("/", async (req, res) => {
       "*" +
       appointment_date;
     let encrypted_msg = "TOAPP*" + (await base64.encode(outgoing_msg));
-    let innerMessage = {};
-    innerMessage.message = encrypted_msg;
-    message.push(innerMessage);
-  }
-  let result = {};
-  result.result = message;
-  res.status(200).send(result);
-});
 
-module.exports = router;
+    message.push(encrypted_msg);
+  }
+  return message;
+};
+
+function isEmpty(myvalue) {
+  let isNull = true;
+  if (
+    myvalue == "" ||
+    myvalue == null ||
+    myvalue === null ||
+    myvalue == undefined
+  ) {
+    isNull = true;
+  } else {
+    isNull = false;
+  }
+
+  return isNull;
+}

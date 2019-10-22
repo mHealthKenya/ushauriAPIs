@@ -10,6 +10,8 @@ const clearFakeMissed = require("./processes/clear_fake_missed");
 const processDefaulterDiary = require("./processes/process_defaulter_diary");
 const moveClient = require("./processes/clinic_movement");
 const transitClient = require("./processes/transit_client");
+const getTodaysAppoitnmentSMS = require("./processes/get_todays_appointments_sms");
+const getPastAppoitnmentSMS = require("./processes/get_past_appointments_sms");
 
 router.post("/", async(req, res) => {
     let message = req.body.msg;
@@ -21,8 +23,6 @@ router.post("/", async(req, res) => {
         res
         .status(400)
         .send(`Phone Number: ${phone} is not registered in the system`);
-
-
 
     //check if message if registration message
 
@@ -58,6 +58,7 @@ router.get("/:id", async(req, res) => {
     const incoming_id = req.params.id;
 
     let incoming = await Incoming.findByPk(incoming_id);
+
     if (!incoming)
         res.status(400).send(`Incoming ID: ${incoming_id} not in the system`);
 
@@ -100,8 +101,26 @@ router.get("/:id", async(req, res) => {
             } else if (message.includes("TRANSITCLIENT")) {
                 let result = await transitClient(message, user);
                 Sender(phone, `${result.message}`);
-            } else if (message) {
+            } else if (!isNaN(message)) {
+                let result = await getTodaysAppoitnmentSMS(message);
+                if (Array.isArray(result)) {
+                    for (let i = 0; i < result.length; i++) {
+                        let msg = "<# " + result[i] + " iV4Mr+5+/zX>";
+                        // console.log(`todays: ${msg}`);
+                        Sender(phone, msg);
+                    }
+                    Sender(phone, result);
+                }
+                let pastresult = await getPastAppoitnmentSMS(message);
 
+                if (Array.isArray(pastresult)) {
+                    for (let i = 0; i < pastresult.length; i++) {
+                        let msg = "<# " + pastresult[i] + " iV4Mr+5+/zX>";
+                        // console.log(`past: ${msg}`);
+                        Sender(phone, msg);
+                    }
+                }
+                Sender(phone, pastresult);
             }
         }
 
