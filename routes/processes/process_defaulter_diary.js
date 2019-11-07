@@ -121,7 +121,7 @@ async function processDefaulterDiary(message, user) {
       message: "Date of return to care can not be greater than current date"
     };
 
-  let create_outcome = clientOutcome.create({
+  let create_outcome = await clientOutcome.create({
     client_id: client.id,
     appointment_id: appointment_details.id,
     outcome: outcome,
@@ -138,6 +138,7 @@ async function processDefaulterDiary(message, user) {
   if (create_outcome) {
     let client_outcome_id = create_outcome.id;
     let no_calls = appointment_details.no_calls;
+
     if (no_calls < 1) {
       no_calls = 1;
     } else {
