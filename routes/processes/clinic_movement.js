@@ -1,6 +1,8 @@
 {
   const { Client } = require("../../models/client");
   const { Clinic } = require("../../models/clinic");
+  const { User } = require("../../models/user");
+
   const moment = require("moment");
   const base64 = require("base64util");
 
@@ -45,6 +47,17 @@
         code: 400,
         message: `Client: ${ccc_number} already exists in the  Clinic : ${clinic.name} and cannot be moved . `
       };
+
+    let active_clinic = await User.findAll({
+      where: { facility_id: user.facility_id, clinic_id: clinic.id }
+    });
+    if (active_clinic.length === 0) {
+      return {
+        code: 200,
+        message: `Clinic: ${clinic.name} has not been activated in your facility`
+      };
+    }
+
     return Client.update(
       {
         clinic_id: clinic.id,
