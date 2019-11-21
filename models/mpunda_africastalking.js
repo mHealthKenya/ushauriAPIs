@@ -5,7 +5,7 @@ const config = {
 const AfricasTalking = require("africastalking")(config);
 const sms = AfricasTalking.SMS;
 
-function sendSMS(number, msg) {
+function sendSMS(from, number, msg) {
   let num;
   if (number.includes("+254")) {
     num = number;
@@ -14,7 +14,7 @@ function sendSMS(number, msg) {
     num = "+254" + num;
   }
   const options = {
-    from: "40149",
+    from: from,
     to: num,
     message: msg
   };
