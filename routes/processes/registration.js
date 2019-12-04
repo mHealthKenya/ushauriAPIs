@@ -58,6 +58,8 @@ async function registerClient(message, user) {
     const partner_id = user.partner_id;
     const user_id = user.id;
 
+
+
     let today = moment(new Date().toDateString()).format("YYYY-MM-DD");
 
     if (!upn) return { code: 400, message: "Clinic Number not provided" };
@@ -102,7 +104,6 @@ async function registerClient(message, user) {
         //Paeds
         group_id = 3;
     }
-    let consented = moment(new Date()).format("YYYY-MM-DD");
     if (parseInt(sms_enable) == 1) {
         sms_enable = "Yes";
     } else if (parseInt(sms_enable) == 2) {
@@ -112,6 +113,7 @@ async function registerClient(message, user) {
         condition = "ART";
     } else if (parseInt(condition) == 2) {
         condition = "Pre-Art";
+        art_start_date = null;
     }
     let status;
     if (client_status != "-1") {
@@ -138,13 +140,8 @@ async function registerClient(message, user) {
         client_type = "New";
     }
 
-    if (art_start_date == "-1") {
-        art_start_date = null;
 
-    }
-    if (language == "-1") {
-        language = null;
-    }
+
 
     if (transaction_type == 1 || transaction_type == 3) {
         //New Registration or Transfer IN for a client not existing in the system
@@ -161,6 +158,7 @@ async function registerClient(message, user) {
             sms_enable = "Yes";
         } else if (parseInt(sms_enable) == 2 || sms_enable === "-1") {
             sms_enable = "No";
+            consented = null;
         }
 
         let motivational_enable;
@@ -169,6 +167,18 @@ async function registerClient(message, user) {
         } else if (parseInt(motivation_enable) == 2 || motivation_enable === "-1") {
             motivational_enable = "No";
         }
+        let welcome_sent;
+        if (sms_enable == "Yes" && language != 5) {
+            welcome_sent = "Yes";
+        } else if (language == 5 && sms_enable == "No") {
+            welcome_sent = "No";
+        }
+        if (language < 0) {
+            language = 5;
+        }
+
+
+
 
         //save the client details
         return Client.findOrCreate({
@@ -195,6 +205,7 @@ async function registerClient(message, user) {
                 art_date: art_start_date,
                 created_at: b,
                 entry_point: "Mobile",
+                welcome_sent: welcome_sent,
                 created_by: user_id,
                 client_type: client_type,
                 txt_time: messaging_time,
@@ -215,19 +226,27 @@ async function registerClient(message, user) {
 
         .then(async([created, client]) => {
                 if (created) {
-                    if (sms_enable == "Yes" && language != "-1") {
+
+                    if (sms_enable == "Yes" && language != 5) {
                         let message = await Message.findAll({
                             where: { message_type_id: 3, language_id: language }
                         });
+
 
                         //here we loop through an object
                         var new_message;
                         Object.values(message).forEach(value => {
                             let phone;
                             new_message = value.message;
+
                             if (value.logic_flow == 1) {
                                 new_message = new_message.replace("XXX", f_name);
                             }
+                            if (value.logic_flow == 2) {
+                                new_message;
+                            }
+
+
                             if (primary_phone_no != null) {
                                 phone = primary_phone_no;
                             } else if (primary_phone_no == null && alt_phone_no != null) {
@@ -240,8 +259,14 @@ async function registerClient(message, user) {
                                 phone = buddy_phone_no;
                             }
                             Sender(phone, new_message);
+
+
                         });
+
                     }
+
+
+
 
                     return {
                         code: 200,
@@ -303,6 +328,9 @@ async function registerClient(message, user) {
                 client = await Client.findOne({ where: { clinic_number: upn } });
 
                 if (updated) {
+                    if (language < 0 || language === '' || language == null) {
+                        language = 5
+                    }
                     if (status != "Active" || status != null || status != "") {
                         Appointment.update({
                                 active_app: "0",

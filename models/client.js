@@ -51,6 +51,7 @@ const Client = sequelize.sequelize.define(
         },
         wellness_enable: Sequelize.ENUM("Yes", "No"),
         motivational_enable: Sequelize.ENUM("Yes", "No"),
+        welcome_sent: Sequelize.ENUM("Yes", "No"),
         client_type: Sequelize.ENUM("New", "Transfer"),
         consent_date: Sequelize.DATEONLY,
         physical_address: Sequelize.STRING,

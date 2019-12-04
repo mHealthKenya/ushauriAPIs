@@ -9,6 +9,7 @@ const processAppointment = require("./processes/process_appointment");
 const clearFakeMissed = require("./processes/clear_fake_missed");
 const processDefaulterDiary = require("./processes/process_defaulter_diary");
 const moveClient = require("./processes/clinic_movement");
+const transferClient = require("./processes/transer_client");
 const transitClient = require("./processes/transit_client");
 const getTodaysAppoitnmentSMS = require("./processes/get_todays_appointments_sms");
 const getPastAppoitnmentSMS = require("./processes/get_past_appointments_sms");
@@ -40,6 +41,9 @@ router.post("/", async(req, res) => {
         res.status(`${result.code}`).send(`${result.message}`);
     } else if (message.includes("MOVECLINIC")) {
         let result = await moveClient(message, user);
+        res.status(`${result.code}`).send(`${result.message}`);
+    } else if (message.includes("TRANS")) {
+        let result = await transferClient(message, user);
         res.status(`${result.code}`).send(`${result.message}`);
     } else if (
         message.includes("MSD") ||
