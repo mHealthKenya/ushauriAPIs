@@ -14,7 +14,7 @@ async function transferClient(message, user) {
     if (!user_mfl) {
         return {
             code: 200,
-            message: 'unavailable'
+            message: `MFL Code ${user_mfl} is not active in Ushauri`
         }
 
     }
@@ -42,8 +42,7 @@ async function transferClient(message, user) {
     if (user.facility_id == client.mfl_code)
         return {
             code: 400,
-            message: 'clieny is already hetre'
-                // message: `Client: ${ccc_number} is already in your facility ${user.facility_id}`
+            message: `Client: ${ccc_number} is already in your facility ${user.facility_id}`
         };
 
     return Client.update({
