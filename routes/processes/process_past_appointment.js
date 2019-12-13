@@ -52,7 +52,7 @@ router.post("/", async(req, res) => {
         let appointment_date = appointments[i].appntmnt_date;
         let file_no = appointments[i].file_no;
         let buddy_phone_no = appointments[i].buddy_phone_no;
-        let other_appointment_type = appointments[1].other_appointment_type;
+        let other_appointment_type = appointments[i].other_appointment_type;
         appointments[i].trmnt_buddy_phone_no = '';
         if (isEmpty(buddy_phone_no)) {
             appointments[i].trmnt_buddy_phone_no = '-1';
