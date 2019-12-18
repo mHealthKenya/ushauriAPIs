@@ -154,10 +154,10 @@ async function processDefaulterDiary(message, user) {
                     if (final_outcome == 1) {
                         /*
 
-           * Declined Care
-              * leave appointment as open and follow up later with the  client.
-              * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
-           *  */
+                        * Declined Care
+                            * leave appointment as open and follow up later with the  client.
+                            * visit types => 'Scheduled','Un-Scheduled','Re-Scheduled'
+                        *  */
                         Appointment.update({
                                 fnl_trcing_outocme: "3",
                                 fnl_outcome_dte: today,
@@ -216,7 +216,7 @@ async function processDefaulterDiary(message, user) {
                     if (final_outcome == 3) {
                         /*
                          * Self Transfer
-                         * leave appointment as cvlosed and self transfer the  client.
+                         * leave appointment as closed and self transfer the  client.
                          */
                         Appointment.update({
                                 active_app: "0",
@@ -240,9 +240,9 @@ async function processDefaulterDiary(message, user) {
                     if (final_outcome == 4) {
                         /*
 
-          * Dead / Deceased
-          * leave appointment as open and follow up later with the  client.
-          *                                                                 */
+                        * Dead / Deceased
+                        * leave appointment as open and follow up later with the  client.
+                        *                                                                 */
 
                         Appointment.update({
                                 active_app: "0",

@@ -60,6 +60,12 @@ async function processAppointment(message, user) {
             code: 400,
             message: ` Appointment was not scheduled in the  system , Client: ${upn} is not active in the system.`
         };
+    if (client.mfl_code != user.facility_id) {
+        return {
+            code: 400,
+            message: `Client ${upn} does not belong to your facility. The client is registered under MFL Code ${client.mfl_code}`
+        };
+    }
 
     if (app_date > today) {
         if (old_appointment_id == "-1") {
