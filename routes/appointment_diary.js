@@ -109,7 +109,7 @@ router.get("/:id", async(req, res) => {
                 let result = await getTodaysAppoitnmentSMS(message);
                 if (Array.isArray(result)) {
                     for (let i = 0; i < result.length; i++) {
-                        let msg = "<# " + result[i] + " iV4Mr+5+/zX>";
+                        let msg = "<# " + result[i] + " afS/RY5iPcB>";
                         // console.log(`todays: ${msg}`);
                         Sender(phone, msg);
                     }
@@ -119,7 +119,7 @@ router.get("/:id", async(req, res) => {
 
                 if (Array.isArray(pastresult)) {
                     for (let i = 0; i < pastresult.length; i++) {
-                        let msg = "<# " + pastresult[i] + " iV4Mr+5+/zX>";
+                        let msg = "<# " + pastresult[i] + " afS/RY5iPcB>";
                         // console.log(`past: ${msg}`);
                         Sender(phone, msg);
                     }
