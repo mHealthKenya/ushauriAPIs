@@ -110,7 +110,6 @@ router.get("/:id", async(req, res) => {
                 if (Array.isArray(result)) {
                     for (let i = 0; i < result.length; i++) {
                         let msg = "<# " + result[i] + "afS/RY5iPcB>";
-                        // console.log(`todays: ${msg}`);
                         Sender(phone, msg);
                     }
                     Sender(phone, result);
@@ -120,7 +119,6 @@ router.get("/:id", async(req, res) => {
                 if (Array.isArray(pastresult)) {
                     for (let i = 0; i < pastresult.length; i++) {
                         let msg = "<# " + pastresult[i] + "afS/RY5iPcB>";
-                        // console.log(`past: ${msg}`);
                         Sender(phone, msg);
                     }
                 }
