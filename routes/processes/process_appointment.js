@@ -1,8 +1,22 @@
-const { Client } = require("../../models/client");
+const {
+    Client
+} = require("../../models/client");
 const moment = require("moment");
 const base64 = require("base64util");
-const { Appointment } = require("../../models/appointment");
-const { OtherAppointmentType } = require('../../models/other_appointment_types');
+const {
+    Sender
+} = require("../../models/africastalking");
+const {
+    Message
+} = require("../../models/message");
+
+
+const {
+    Appointment
+} = require("../../models/appointment");
+const {
+    OtherAppointmentType
+} = require('../../models/other_appointment_types');
 
 async function processAppointment(message, user) {
     message = message.split("*");
@@ -49,7 +63,11 @@ async function processAppointment(message, user) {
             message: "Invalid Appointment Date , DD/MM/YYYY is the  appropriate date format"
         };
     }
-    let client = await Client.findOne({ where: { clinic_number: upn } });
+    let client = await Client.findOne({
+        where: {
+            clinic_number: upn
+        }
+    });
     if (!client)
         return {
             code: 400,
@@ -125,12 +143,18 @@ async function processAppointment(message, user) {
                 // appointment history exists
 
                 let active_appointment = await Appointment.count({
-                    where: { client_id: client.id, active_app: "1" }
+                    where: {
+                        client_id: client.id,
+                        active_app: "1"
+                    }
                 });
                 if (active_appointment > 0) {
                     //check if date of appointment is less than today
                     let active_appointment_details = await Appointment.findOne({
-                        where: { client_id: client.id, active_app: "1" }
+                        where: {
+                            client_id: client.id,
+                            active_app: "1"
+                        }
                     });
                     //if less, redirect user to the defaulter diary to update appointment
 
@@ -185,7 +209,9 @@ async function processAppointment(message, user) {
                                 app_status: "Notified",
                                 visit_type: "Un-Scheduled"
                             }, {
-                                where: { id: active_appointment_details.id }
+                                where: {
+                                    id: active_appointment_details.id
+                                }
                             })
                             .then(([updated, old_app]) => {
                                 if (updated) {
@@ -323,8 +349,12 @@ async function processAppointment(message, user) {
                             updated_by: user.id,
                             app_status: "Notified",
                             visit_type: "Scheduled"
-                        }, { where: { id: old_appointment_id } })
-                        .then(([updated, old_app]) => {
+                        }, {
+                            where: {
+                                id: old_appointment_id
+                            }
+                        })
+                        .then(async([updated, old_app]) => {
 
 
                             if (updated) {
@@ -341,7 +371,7 @@ async function processAppointment(message, user) {
                                     entry_point: "Mobile",
                                     visit_type: "Scheduled",
                                     active_app: "1"
-                                }).then((new_app) => {
+                                }).then(async(new_app) => {
                                     if (appointment_type == "6") {
                                         return OtherAppointmentType.create({
                                             name: appointment_other,
@@ -361,6 +391,36 @@ async function processAppointment(message, user) {
                                         })
 
                                     }
+
+                                    //console.log(`client is : ${client.smsenable}`);
+
+
+
+                                    if (client.smsenable == "Yes" && client.language_id != 5) {
+                                        let message = await Message.findOne({
+                                            where: {
+                                                message_type_id: 1,
+                                                logic_flow: 1,
+                                                language_id: client.language_id
+                                            }
+                                        });
+                                        let phone;
+                                        message = message.message;
+                                        let new_message = message.replace("XXX", client.f_name);
+                                        console.log(`Message: ${new_message}`)
+
+                                        if (client.phone_no != null) {
+                                            phone = client.phone_no
+                                        } else if (client.phone_no == null && client.alt_phone_no != null) {
+                                            phone = client.alt_phone_no
+
+                                        }
+
+                                        if (phone) {
+                                            Sender(phone, new_message);
+                                        }
+                                    }
+
                                     return {
                                         code: 200,
                                         message: `Appointment for ${upn} on ${app_date} was created successfully`
@@ -374,6 +434,11 @@ async function processAppointment(message, user) {
 
 
                             }
+
+
+
+
+
                         })
                         .catch(e => {
                             return {
@@ -381,6 +446,7 @@ async function processAppointment(message, user) {
                                 message: "An error occured, could not update old Appointment"
                             };
                         });
+
                 } else {
                     return {
                         code: 400,
